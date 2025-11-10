@@ -1,0 +1,41 @@
+<div class="min-h-[70vh] flex items-center justify-center">
+  <div class="w-80 bg-white/90 backdrop-blur-md rounded-xl shadow-lg p-6">
+    <h2 class="text-xl font-semibold text-slate-900 mb-4">Crear cuenta</h2>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-3">
+      <label class="flex items-center gap-3 p-2 rounded-lg border border-slate-200">
+        <i class="fa fa-envelope text-slate-400"></i>
+        <input
+          class="flex-1 bg-transparent outline-none text-sm"
+          type="email"
+          formControlName="email"
+          placeholder="Email"
+        />
+      </label>
+
+      <label class="flex items-center gap-3 p-2 rounded-lg border border-slate-200">
+        <i class="fa fa-lock text-slate-400"></i>
+        <input
+          class="flex-1 bg-transparent outline-none text-sm"
+          type="password"
+          formControlName="password"
+          placeholder="Contraseña (mín 6)"
+        />
+      </label>
+
+      <div class="flex items-center justify-between mt-2">
+        <button
+          class="px-4 py-2 rounded-lg text-white bg-linear-to-r from-green-400 to-cyan-500 disabled:opacity-70"
+          type="submit"
+          [disabled]="loading"
+        >
+          {{ loading ? 'Creando...' : 'Crear cuenta' }}
+        </button>
+        <a routerLink="/login" class="text-sm text-indigo-600">Ya tengo cuenta</a>
+      </div>
+
+      <p *ngIf="error" class="text-sm text-red-600">{{ error }}</p>
+      <p *ngIf="success" class="text-sm text-emerald-700">{{ success }}</p>
+    </form>
+  </div>
+</div>
