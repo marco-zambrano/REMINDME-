@@ -1,6 +1,13 @@
-# Remindme
+# 📍 REMINDME - Recordatorios Inteligentes con Geolocalización
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.9.
+![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
+![Angular](https://img.shields.io/badge/Angular-20.3-red.svg)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
+
+## 🎯 Descripción del Proyecto
+
+**RemindMe** es una aplicación web progresiva (PWA) que resuelve el problema de olvidar tareas importantes cuando estás cerca de lugares específicos. Por ejemplo, te recuerda comprar leche cuando pasas por el supermercado o recoger documentos cuando estás cerca de la oficina.
 
 ## Development server
 

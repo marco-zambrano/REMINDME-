@@ -1,4 +1,3 @@
-// src/app/services/supabase.service.ts
 import { Injectable } from '@angular/core';
 import { createClient, SupabaseClient, User } from '@supabase/supabase-js';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -7,8 +6,8 @@ import { BehaviorSubject, Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class SupabaseService {
-  private supabase: SupabaseClient;
-  private currentUser: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
+  private readonly supabase: SupabaseClient;
+  private readonly currentUser: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
 
   constructor() {
     const supabaseUrl = 'https://ebrtyrkyacahgkraxbwa.supabase.co';
