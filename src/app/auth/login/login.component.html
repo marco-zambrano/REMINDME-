@@ -1,26 +1,138 @@
-<div class="min-h-[70vh] flex items-center justify-center">
-  <div class="w-80 bg-white/90 backdrop-blur-md rounded-xl shadow-lg p-6">
-    <h2 class="text-xl font-semibold text-slate-900 mb-4">Iniciar sesión</h2>
-
-    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-3">
-      <label class="flex items-center gap-3 p-2 rounded-lg border border-slate-200">
-        <i class="fa fa-envelope text-slate-400"></i>
-        <input class="flex-1 bg-transparent outline-none text-sm" type="email" formControlName="email" placeholder="Email" />
-      </label>
-
-      <label class="flex items-center gap-3 p-2 rounded-lg border border-slate-200">
-        <i class="fa fa-lock text-slate-400"></i>
-        <input class="flex-1 bg-transparent outline-none text-sm" type="password" formControlName="password" placeholder="Contraseña" />
-      </label>
-
-      <div class="flex items-center justify-between mt-2">
-        <button class="px-4 py-2 rounded-lg text-white bg-linear-to-r from-rose-500 to-amber-300 disabled:opacity-70" type="submit" [disabled]="loading">
-          {{ loading ? 'Ingresando...' : 'Entrar' }}
-        </button>
-        <a routerLink="/register" class="text-sm text-indigo-600">Crear cuenta</a>
+<div class="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4">
+  <div class="w-full max-w-md">
+    <!-- Logo y Título Animado -->
+    <div class="text-center mb-8 animate-fade-in">
+      <div class="inline-block mb-4 relative">
+        <div class="absolute inset-0 bg-blue-500 rounded-full blur-2xl opacity-20 animate-pulse"></div>
+        <div class="relative bg-gradient-to-br from-blue-600 to-purple-600 rounded-3xl p-6 shadow-2xl transform hover:scale-105 transition-transform duration-300">
+          <span class="text-6xl">📍</span>
+        </div>
       </div>
+      <h1 class="text-4xl font-bold text-gray-800 mb-2">
+        <span class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          RemindMe
+        </span>
+      </h1>
+      <p class="text-gray-600 text-sm">Recordatorios inteligentes con geolocalización</p>
+    </div>
 
-      <p *ngIf="error" class="text-sm text-red-600">{{ error }}</p>
-    </form>
+    <!-- Formulario de Login -->
+    <div class="bg-white rounded-2xl shadow-xl p-8 backdrop-blur-sm border border-gray-100">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Iniciar sesión</h2>
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-5">
+        <!-- Email Input -->
+        <div class="relative">
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            Correo electrónico
+          </label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <span class="text-gray-400 text-lg">📧</span>
+            </div>
+            <input
+              class="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all duration-200 placeholder:text-gray-300 placeholder:text-sm"
+              type="email"
+              formControlName="email"
+              placeholder="Ingresa tu correo electrónico"
+              [class.border-red-300]="form.get('email')?.invalid && form.get('email')?.touched"
+            />
+          </div>
+          <p *ngIf="form.get('email')?.invalid && form.get('email')?.touched" class="text-xs text-red-500 mt-1">
+            Ingresa un email válido
+          </p>
+        </div>
+
+        <!-- Password Input -->
+        <div class="relative">
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            Contraseña
+          </label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <span class="text-gray-400 text-lg">🔒</span>
+            </div>
+            <input
+              class="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all duration-200 placeholder:text-gray-300 placeholder:text-sm"
+              type="password"
+              formControlName="password"
+              placeholder="Escribe tu contraseña"
+              [class.border-red-300]="form.get('password')?.invalid && form.get('password')?.touched"
+            />
+          </div>
+          <p *ngIf="form.get('password')?.invalid && form.get('password')?.touched" class="text-xs text-red-500 mt-1">
+            La contraseña debe tener al menos 6 caracteres
+          </p>
+        </div>
+
+        <!-- Error Message -->
+        <div *ngIf="error" class="bg-red-50 border border-red-200 rounded-xl p-3 flex items-center gap-2">
+          <span class="text-red-500 text-lg">⚠️</span>
+          <p class="text-sm text-red-700">{{ error }}</p>
+        </div>
+
+        <!-- Submit Button -->
+        <button
+          type="submit"
+          [disabled]="loading || form.invalid"
+          class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg transform transition-all duration-200 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+        >
+          <span *ngIf="!loading" class="flex items-center justify-center gap-2">
+            <span>Iniciar sesión</span>
+            <span>→</span>
+          </span>
+          <span *ngIf="loading" class="flex items-center justify-center gap-2">
+            <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span>Iniciando sesión...</span>
+          </span>
+        </button>
+
+        <!-- Divider -->
+        <div class="relative my-6">
+          <div class="absolute inset-0 flex items-center">
+            <div class="w-full border-t border-gray-200"></div>
+          </div>
+          <div class="relative flex justify-center text-sm">
+            <span class="px-4 bg-white text-gray-500">¿No tienes cuenta?</span>
+          </div>
+        </div>
+
+        <!-- Register Link -->
+        <a
+          routerLink="/register"
+          class="block w-full text-center bg-gray-50 hover:bg-gray-100 text-gray-700 font-semibold py-3 px-6 rounded-xl border-2 border-gray-200 transition-all duration-200 hover:border-gray-300"
+        >
+          <span class="flex items-center justify-center gap-2">
+            <span>✨</span>
+            <span>Crear cuenta nueva</span>
+          </span>
+        </a>
+      </form>
+    </div>
+
+    <!-- Footer -->
+    <div class="text-center mt-6 text-sm text-gray-500">
+      <p>Tus recordatorios, siempre en el lugar correcto</p>
+    </div>
   </div>
 </div>
+
+<style>
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.6s ease-out;
+  }
+</style>
