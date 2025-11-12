@@ -6,6 +6,9 @@
         <div>
           <h1 class="text-3xl font-bold text-gray-900">📍 RemindMe</h1>
           <p class="text-sm text-gray-600 mt-1">Recordatorios inteligentes con geolocalización</p>
+          @if (currentUser()) {
+          <p class="text-xs text-gray-500 mt-1">👤 {{ currentUser()!.email }}</p>
+          }
         </div>
         <div class="flex items-center gap-3">
           <button
@@ -23,6 +26,13 @@
           >
             + Nuevo Recordatorio
           </a>
+          <button
+            (click)="logout()"
+            class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+            title="Cerrar sesión"
+          >
+            🚪 Salir
+          </button>
         </div>
       </div>
     </div>

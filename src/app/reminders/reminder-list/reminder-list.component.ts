@@ -1,10 +1,12 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ReminderService } from '../../services/reminder.service';
 import { NotificationService } from '../../services/notification.service';
 import { GeolocationService } from '../../services/geolocation.service';
+import { SupabaseService } from '../../services/supabase.service';
 import { Reminder, ReminderCategory, ReminderStats } from '../../models';
+import { User } from '@supabase/supabase-js';
 
 @Component({
   selector: 'app-reminder-list',
@@ -16,11 +18,14 @@ export class ReminderListComponent implements OnInit {
   private readonly reminderService = inject(ReminderService);
   private readonly notificationService = inject(NotificationService);
   private readonly geolocationService = inject(GeolocationService);
+  private readonly supabaseService = inject(SupabaseService);
+  private readonly router = inject(Router);
 
   // Señales para estado reactivo
   reminders = signal<Reminder[]>([]);
   activeReminders = signal<Reminder[]>([]);
   completedReminders = signal<Reminder[]>([]);
+  currentUser = signal<User | null>(null);
   stats = signal<ReminderStats>({
     total: 0,
     active: 0,
@@ -43,6 +48,14 @@ export class ReminderListComponent implements OnInit {
 
   ngOnInit() {
     this.initializeComponent();
+
+    // Obtener usuario actual
+    this.currentUser.set(this.supabaseService.getCurrentUser());
+
+    // Suscribirse a cambios de usuario
+    this.supabaseService.user$.subscribe((user) => {
+      this.currentUser.set(user);
+    });
 
     // Suscribirse a cambios en los recordatorios
     this.reminderService.reminders$.subscribe((reminders) => {
@@ -186,5 +199,12 @@ export class ReminderListComponent implements OnInit {
     await this.reminderService.refresh();
     await this.loadStats();
     this.getCurrentLocation();
+  }
+
+  async logout() {
+    if (confirm('¿Estás seguro de cerrar sesión?')) {
+      await this.supabaseService.signOut();
+      this.router.navigate(['/login']);
+    }
   }
 }

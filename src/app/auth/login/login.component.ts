@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -10,7 +10,7 @@ import { SupabaseService } from '../../services/supabase.service';
   imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './login.component.html',
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   form!: FormGroup;
   loading = false;
   error: string | null = null;
@@ -20,6 +20,13 @@ export class LoginComponent {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
     });
+  }
+
+  ngOnInit() {
+    // Si ya está autenticado, redirigir a reminders
+    if (this.supabase.getCurrentUser()) {
+      this.router.navigate(['/reminders']);
+    }
   }
 
   async onSubmit() {
@@ -35,7 +42,7 @@ export class LoginComponent {
       if (error) {
         this.error = error.message || 'Error al iniciar sesión';
       } else {
-        this.router.navigate(['/']);
+        this.router.navigate(['/reminders']);
       }
     } catch (err: any) {
       this.error = err?.message ?? String(err);

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -10,7 +10,7 @@ import { SupabaseService } from '../../services/supabase.service';
   imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './register.component.html',
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit {
   form!: FormGroup;
   loading = false;
   error: string | null = null;
@@ -21,6 +21,13 @@ export class RegisterComponent {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
     });
+  }
+
+  ngOnInit() {
+    // Si ya está autenticado, redirigir a reminders
+    if (this.supabase.getCurrentUser()) {
+      this.router.navigate(['/reminders']);
+    }
   }
 
   async onSubmit() {
