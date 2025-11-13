@@ -43,30 +43,8 @@ export class ReminderService {
    * @returns Lista de recordatorios
    */
   async getReminders(filter?: ReminderFilter): Promise<Reminder[]> {
-    // Simulación de llamada a Supabase
-    // En producción, esto sería una llamada real a la base de datos
-    const mockReminders: Reminder[] = [
-      {
-        id: '1',
-        userId: filter?.userId || 'user1',
-        title: 'Comprar leche',
-        description: 'No olvidar comprar leche descremada',
-        category: ReminderCategory.COMPRAS,
-        location: {
-          latitude: 40.4168,
-          longitude: -3.7038,
-          name: 'Supermercado',
-          address: 'Calle Mayor 1, Madrid',
-        },
-        radius: 500,
-        completed: false,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        notified: false,
-      },
-    ];
-
-    let filteredReminders = mockReminders;
+    // Obtener recordatorios del estado actual
+    let filteredReminders = this.remindersSubject.value;
 
     if (filter) {
       if (filter.category) {
@@ -108,9 +86,14 @@ export class ReminderService {
       updatedAt: new Date(),
     };
 
+    console.log('📝 Creando nuevo recordatorio:', newReminder);
+
     // Agregar a la lista local
     const currentReminders = this.remindersSubject.value;
-    this.remindersSubject.next([...currentReminders, newReminder]);
+    const updatedReminders = [...currentReminders, newReminder];
+    this.remindersSubject.next(updatedReminders);
+
+    console.log('✅ Recordatorio creado. Total de recordatorios:', updatedReminders.length);
 
     return newReminder;
   }

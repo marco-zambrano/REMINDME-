@@ -13,12 +13,29 @@ export class SupabaseService {
     const supabaseUrl = 'https://ebrtyrkyacahgkraxbwa.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVicnR5cmt5YWNhaGdrcmF4YndhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI3OTc4NjcsImV4cCI6MjA3ODM3Mzg2N30.mTVofKOZZ8AmGmFJzlnSkLg8zdvOpyTm9iVA3g43Tss';
     
-    this.supabase = createClient(supabaseUrl, supabaseKey);
-    
-    // Verificar sesión existente
-    this.supabase.auth.getSession().then(({ data }) => {
-      this.currentUser.next(data.session?.user ?? null);
+    this.supabase = createClient(supabaseUrl, supabaseKey, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true,
+        flowType: 'pkce',
+        storage: window.localStorage,
+        storageKey: 'remindme-auth-token'
+      }
     });
+    
+    // Verificar sesión existente con manejo de errores
+    this.supabase.auth.getSession()
+      .then(({ data }) => {
+        this.currentUser.next(data.session?.user ?? null);
+      })
+      .catch(error => {
+        // Silenciar errores de lock en desarrollo (son normales cuando hay múltiples pestañas)
+        if (!error.message?.includes('NavigatorLock')) {
+          console.warn('⚠️ Error al obtener sesión:', error);
+        }
+        this.currentUser.next(null);
+      });
 
     // Escuchar cambios de autenticación
     this.supabase.auth.onAuthStateChange((event, session) => {

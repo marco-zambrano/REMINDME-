@@ -5,6 +5,7 @@ import { ReminderService } from '../../services/reminder.service';
 import { NotificationService } from '../../services/notification.service';
 import { GeolocationService } from '../../services/geolocation.service';
 import { SupabaseService } from '../../services/supabase.service';
+import { PwaService } from '../../services/pwa.service';
 import { Reminder, ReminderCategory, ReminderStats } from '../../models';
 import { User } from '@supabase/supabase-js';
 
@@ -19,6 +20,7 @@ export class ReminderListComponent implements OnInit {
   private readonly notificationService = inject(NotificationService);
   private readonly geolocationService = inject(GeolocationService);
   private readonly supabaseService = inject(SupabaseService);
+  private readonly pwaService = inject(PwaService);
   private readonly router = inject(Router);
 
   // Señales para estado reactivo
@@ -59,8 +61,10 @@ export class ReminderListComponent implements OnInit {
 
     // Suscribirse a cambios en los recordatorios
     this.reminderService.reminders$.subscribe((reminders) => {
+      console.log('🔄 Recordatorios actualizados:', reminders.length);
       this.reminders.set(reminders);
       this.filterReminders();
+      this.loadStats(); // Actualizar estadísticas automáticamente
     });
   }
 
@@ -92,23 +96,20 @@ export class ReminderListComponent implements OnInit {
 
     let filtered = this.reminders();
 
-    // Filtrar por estado
-    if (filter === 'active') {
-      filtered = filtered.filter((r: Reminder) => !r.completed);
-    } else if (filter === 'completed') {
-      filtered = filtered.filter((r: Reminder) => r.completed);
-    }
-
-    // Filtrar por categoría
+    // Filtrar por categoría primero
     if (category !== 'all') {
       filtered = filtered.filter((r: Reminder) => r.category === category);
     }
 
-    if (filter === 'active') {
-      this.activeReminders.set(filtered);
-    } else if (filter === 'completed') {
-      this.completedReminders.set(filtered);
-    }
+    // Separar en activos y completados
+    const active = filtered.filter((r: Reminder) => !r.completed);
+    const completed = filtered.filter((r: Reminder) => r.completed);
+
+    // Actualizar las listas
+    this.activeReminders.set(active);
+    this.completedReminders.set(completed);
+
+    console.log('📊 Filtros aplicados - Activos:', active.length, 'Completados:', completed.length);
   }
 
   setFilter(filter: 'all' | 'active' | 'completed') {
@@ -159,9 +160,23 @@ export class ReminderListComponent implements OnInit {
     this.geolocationService.getCurrentPosition().subscribe({
       next: (location) => {
         this.currentLocation.set(location);
+        console.log('📍 Ubicación obtenida:', location.latitude.toFixed(4), location.longitude.toFixed(4));
       },
       error: (error) => {
-        console.error('Error obteniendo ubicación:', error);
+        // No mostrar error si es solo timeout - la ubicación se obtendrá eventualmente
+        console.warn('⚠️ No se pudo obtener ubicación inmediatamente, reintentando...');
+        // Reintentar después de 5 segundos
+        setTimeout(() => {
+          this.geolocationService.getCurrentPosition().subscribe({
+            next: (location) => {
+              this.currentLocation.set(location);
+              console.log('📍 Ubicación obtenida (reintento):', location.latitude.toFixed(4), location.longitude.toFixed(4));
+            },
+            error: () => {
+              console.warn('⚠️ Ubicación no disponible. Las distancias no se mostrarán.');
+            }
+          });
+        }, 5000);
       },
     });
   }
@@ -205,6 +220,17 @@ export class ReminderListComponent implements OnInit {
     if (confirm('¿Estás seguro de cerrar sesión?')) {
       await this.supabaseService.signOut();
       this.router.navigate(['/login']);
+    }
+  }
+
+  canInstallPwa(): boolean {
+    return this.pwaService.canInstall() && !this.pwaService.isInstalled();
+  }
+
+  async installPwa() {
+    const installed = await this.pwaService.installPwa();
+    if (installed) {
+      console.log('✅ PWA instalada correctamente');
     }
   }
 }

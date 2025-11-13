@@ -11,6 +11,15 @@
           }
         </div>
         <div class="flex items-center gap-3">
+          @if (canInstallPwa()) {
+          <button
+            (click)="installPwa()"
+            class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+            title="Instalar RemindMe"
+          >
+            📱 Instalar App
+          </button>
+          }
           <button
             (click)="toggleMonitoring()"
             [class]="

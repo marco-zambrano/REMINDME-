@@ -69,9 +69,9 @@ export class GeolocationService {
           observer.error(this.handleGeolocationError(error));
         },
         {
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 0,
+          enableHighAccuracy: false, // Cambiado a false para mayor compatibilidad
+          timeout: 15000, // Aumentado a 15 segundos
+          maximumAge: 30000, // Permitir ubicaciones cacheadas de hasta 30 segundos
         }
       );
     });
