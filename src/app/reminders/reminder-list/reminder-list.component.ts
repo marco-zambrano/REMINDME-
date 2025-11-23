@@ -219,7 +219,7 @@ export class ReminderListComponent implements OnInit {
   async logout() {
     if (confirm('¿Estás seguro de cerrar sesión?')) {
       await this.supabaseService.signOut();
-      this.router.navigate(['/login']);
+      this.router.navigate(['/home']);
     }
   }
 

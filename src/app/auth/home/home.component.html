@@ -1,0 +1,67 @@
+<header class="header bg-primary text-white p-4 shadow-lg">
+    <div class="container mx-auto flex justify-between items-center">
+        <h1 class="text-3xl font-bold">REMINDME</h1>
+        <nav class="flex space-x-4">
+            <button class="btn-secondary" (click)="crearCuenta()">
+                CREAR CUENTA
+            </button>
+            <button class="btn-secondary" (click)="iniciarSesion()">
+                INICIAR SESIÓN
+            </button>
+        </nav>
+    </div>
+</header>
+
+<main class="container mx-auto p-8">
+
+    <section class="hero-section text-center py-16 bg-white rounded-xl shadow-lg mb-12" style="animation-delay: 0s;">
+        <h2 class="text-5xl font-extrabold text-gray-800 mb-4">
+            Bienvenido al Futuro de la Productividad
+        </h2>
+        <div class="intro-message text-gray-600 mb-8 max-w-2xl mx-auto">
+            <p class="text-2xl font-semibold mb-2">📌 Nunca más olvides lo importante.</p>
+            
+            <p class="text-xl">
+                Con <b>RemindMe</b> tus recordatorios se activan automáticamente cuando estés cerca del lugar donde debes hacer algo.
+            </p>
+            
+            <p class="text-lg">
+                Compra lo que necesitas, cumple tus tareas y mantén tu vida organizada sin esfuerzo.
+            </p>
+            
+            <p class="text-xl font-bold mt-4 text-primary">
+                Tu memoria ahora tiene GPS. 🚀📍
+            </p>
+        </div>
+        <div class="flex justify-center space-x-6">
+            <button class="btn-primary-large hover:shadow-lg" (click)="crearCuenta()">
+                CREAR CUENTA GRATIS
+            </button>
+            <button class="btn-tertiary-large hover:shadow-lg" (click)="iniciarSesion()">
+                YA TENGO CUENTA
+            </button>
+        </div>
+    </section>
+
+    <section class="features-section grid grid-cols-1 md:grid-cols-3 gap-8">
+
+        <div class="feature-card bg-white p-6 rounded-xl shadow hover:shadow-md" style="animation-delay: 0.1s;">
+            <div class="icon-circle bg-accent-light text-accent mb-4">📍</div>
+            <h3 class="text-xl font-semibold mb-2">Recordatorios en Ubicación</h3>
+            <p class="text-gray-600">Alerta al entrar o salir de una dirección específica. Tu mundo es tu lista de pendientes.</p>
+        </div>
+
+        <div class="feature-card bg-white p-6 rounded-xl shadow hover:shadow-md" style="animation-delay: 0.2s;">
+            <div class="icon-circle bg-accent-light text-accent mb-4">✨</div>
+            <h3 class="text-xl font-semibold mb-2">Diseño Intuitivo</h3>
+            <p class="text-gray-600">Crea, edita y gestiona tus recordatorios con una interfaz diseñada para la velocidad.</p>
+        </div>
+
+        <div class="feature-card bg-white p-6 rounded-xl shadow hover:shadow-md" style="animation-delay: 0.3s;">
+            <div class="icon-circle bg-accent-light text-accent mb-4">📱</div>
+            <h3 class="text-xl font-semibold mb-2">Sincronización Total</h3>
+            <p class="text-gray-600">Accede a tus alertas desde tu teléfono, tablet o escritorio. Siempre al día.</p>
+        </div>
+
+    </section>
+</main>

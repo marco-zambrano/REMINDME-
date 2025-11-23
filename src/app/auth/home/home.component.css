@@ -1,0 +1,148 @@
+/* --- Paleta de Colores --- */
+
+/* Definición de colores mediante clases (simulando un sistema de diseño) */
+.text-primary { color: #007bff; }     /* Azul brillante */
+.bg-primary { background-color: #007bff; }
+.text-accent { color: #28a745; }      /* Verde */
+.bg-accent-light { background-color: #e6ffed; }
+
+/* --- Botones y Componentes Interactivos --- */
+
+/* Botón Principal (Llamada a la Acción) */
+.btn-primary-large {
+    background-color: #007bff;
+    color: white;
+    padding: 1rem 2.5rem;
+    border-radius: 9999px; /* Píldora */
+    font-size: 1.25rem;
+    font-weight: bold;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary-large:hover {
+    background-color: #0056b3; /* Tono más oscuro al pasar el ratón */
+    box-shadow: 0 10px 25px rgba(0, 123, 255, 0.3); /* Sombra de color */
+}
+
+/* Botón de Navegación */
+.btn-secondary {
+    background-color: transparent;
+    color: white;
+    border: 2px solid white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    cursor: pointer;
+}
+
+.btn-secondary:hover {
+    background-color: white;
+    color: #007bff; /* Usar el azul primario */
+}
+
+/* Iconos de las Tarjetas */
+.icon-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+/* --- Animaciones y Efectos --- */
+
+/* Keyframes para la animación de entrada */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Aplicar la animación a secciones y tarjetas */
+.hero-section, .feature-card {
+    animation: slideIn 0.6s ease-out backwards;
+}
+
+/* Efectos hover personalizados para las tarjetas */
+.shadow {
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.hover\:shadow-md:hover {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    transform: translateY(-5px);
+}
+
+
+/* --- Estilos de Utilidad y Responsive --- */
+
+.container { max-width: 1200px; }
+.mx-auto { margin-left: auto; margin-right: auto; }
+.p-8 { padding: 2rem; }
+.text-center { text-align: center; }
+.shadow-lg { box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1); }
+.rounded-xl { border-radius: 1rem; }
+.flex { display: flex; }
+.justify-between { justify-content: space-between; }
+.items-center { align-items: center; }
+.grid { display: grid; }
+.gap-8 { gap: 2rem; }
+
+/* Desktop y Tablets (md:) */
+@media (min-width: 768px) {
+    .md\:grid-cols-3 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+/* Móviles (max-width: 767px) */
+@media (max-width: 767px) {
+    .features-section {
+        grid-template-columns: 1fr;
+    }
+    
+    .hero-section h2 {
+        font-size: 3rem;
+    }
+
+    .hero-section p {
+        font-size: 1rem;
+    }
+}
+
+/* --- Nuevo estilo para botón secundario grande (e.g., Ya tengo cuenta) --- */
+.btn-tertiary-large {
+    background-color: transparent;
+    color: #007bff; /* Color primario */
+    border: 2px solid #007bff;
+    padding: 1rem 2.5rem;
+    border-radius: 9999px; 
+    font-size: 1.25rem;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.btn-tertiary-large:hover {
+    background-color: #e6f0ff; /* Fondo ligeramente azul al pasar el ratón */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* Ajuste para el espaciado de la barra de navegación en móvil */
+@media (max-width: 767px) {
+    .header .space-x-4 {
+        /* Reduce el espacio entre botones en pantallas pequeñas */
+        column-gap: 0.75rem; 
+    }
+}

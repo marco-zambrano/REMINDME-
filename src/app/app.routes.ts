@@ -4,11 +4,16 @@ import { RegisterComponent } from './auth/register/register.component';
 import { ReminderListComponent } from './reminders/reminder-list/reminder-list.component';
 import { ReminderFormComponent } from './reminders/reminder-form/reminder-form.component';
 import { authGuard } from './guards/auth.guard';
+import { HomeComponent } from './auth/home/home.component';
+import { guestGuard } from './guards/guest.guard';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'reminders', pathMatch: 'full' },
-  { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent },
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
+
+  { path: 'home', component: HomeComponent, canActivate: [guestGuard] },
+  { path: 'login', component: LoginComponent, canActivate: [guestGuard] },
+  { path: 'register', component: RegisterComponent, canActivate: [guestGuard] },
+  
   { 
     path: 'reminders', 
     component: ReminderListComponent,
@@ -24,5 +29,5 @@ export const routes: Routes = [
     component: ReminderFormComponent,
     canActivate: [authGuard]
   },
-  { path: '**', redirectTo: 'reminders' },
+  { path: '**', redirectTo: 'home' },
 ];
