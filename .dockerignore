@@ -1,0 +1,41 @@
+# Dependencias
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Archivos de desarrollo
+.git
+.gitignore
+.editorconfig
+.vscode
+.idea
+
+# Archivos de compilación
+dist
+.angular
+
+# Tests
+*.spec.ts
+karma.conf.js
+src/**/*.spec.ts
+
+# Documentación
+*.md
+!README.md
+
+# Archivos locales
+.env.local
+.env.*.local
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Logs
+logs
+*.log
+
+# Temporal
+tmp
+temp
+.tmp

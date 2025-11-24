@@ -1,18 +1,22 @@
 import { Injectable } from '@angular/core';
 import { createClient, SupabaseClient, User } from '@supabase/supabase-js';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SupabaseService {
   private readonly supabase: SupabaseClient;
-  private readonly currentUser: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
+  private readonly currentUser: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(
+    null
+  );
 
   constructor() {
-    const supabaseUrl = 'https://ebrtyrkyacahgkraxbwa.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVicnR5cmt5YWNhaGdrcmF4YndhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI3OTc4NjcsImV4cCI6MjA3ODM3Mzg2N30.mTVofKOZZ8AmGmFJzlnSkLg8zdvOpyTm9iVA3g43Tss';
-    
+    // Usar variables de entorno desde environment
+    const supabaseUrl = environment.supabaseUrl;
+    const supabaseKey = environment.supabaseKey;
+
     this.supabase = createClient(supabaseUrl, supabaseKey, {
       auth: {
         persistSession: true,
@@ -20,16 +24,17 @@ export class SupabaseService {
         detectSessionInUrl: true,
         flowType: 'pkce',
         storage: window.localStorage,
-        storageKey: 'remindme-auth-token'
-      }
+        storageKey: 'remindme-auth-token',
+      },
     });
-    
+
     // Verificar sesión existente con manejo de errores
-    this.supabase.auth.getSession()
+    this.supabase.auth
+      .getSession()
       .then(({ data }) => {
         this.currentUser.next(data.session?.user ?? null);
       })
-      .catch(error => {
+      .catch((error) => {
         // Silenciar errores de lock en desarrollo (son normales cuando hay múltiples pestañas)
         if (!error.message?.includes('NavigatorLock')) {
           console.warn('⚠️ Error al obtener sesión:', error);
@@ -52,7 +57,7 @@ export class SupabaseService {
   async signUp(email: string, password: string) {
     const { data, error } = await this.supabase.auth.signUp({
       email,
-      password
+      password,
     });
     return { data, error };
   }
@@ -61,7 +66,7 @@ export class SupabaseService {
   async signIn(email: string, password: string) {
     const { data, error } = await this.supabase.auth.signInWithPassword({
       email,
-      password
+      password,
     });
     return { data, error };
   }

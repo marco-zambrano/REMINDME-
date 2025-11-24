@@ -5,8 +5,13 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:prod": "ng build --configuration=production",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "docker:build": "docker build -t remindme-app .",
+    "docker:run": "docker run -p 8080:8080 -e SUPABASE_URL=$SUPABASE_URL -e SUPABASE_KEY=$SUPABASE_KEY remindme-app",
+    "gcloud:build": "gcloud builds submit --tag gcr.io/PROJECT_ID/remindme",
+    "gcloud:deploy": "gcloud run deploy remindme --image gcr.io/PROJECT_ID/remindme --platform managed --region us-central1 --allow-unauthenticated"
   },
   "prettier": {
     "printWidth": 100,
