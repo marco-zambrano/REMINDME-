@@ -6,6 +6,8 @@ import { ReminderFormComponent } from './reminders/reminder-form/reminder-form.c
 import { authGuard } from './guards/auth.guard';
 import { HomeComponent } from './auth/home/home.component';
 import { guestGuard } from './guards/guest.guard';
+import { PrivacyPolicy } from './legal/privacy-policy/privacy-policy';
+import { TermsOfService } from './legal/terms-of-service/terms-of-service';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -13,6 +15,8 @@ export const routes: Routes = [
   { path: 'home', component: HomeComponent, canActivate: [guestGuard] },
   { path: 'login', component: LoginComponent, canActivate: [guestGuard] },
   { path: 'register', component: RegisterComponent, canActivate: [guestGuard] },
+  { path: 'privacy-policy', component: PrivacyPolicy, canActivate: [guestGuard] },
+  { path: 'terms-of-service', component: TermsOfService, canActivate: [guestGuard] },
   
   { 
     path: 'reminders', 
