@@ -8,7 +8,6 @@ steps:
       - '-t'
       - 'gcr.io/$PROJECT_ID/remindme:latest'
       - '.'
-    timeout: 1200s
 
   # Subir la imagen a Google Container Registry
   - name: 'gcr.io/cloud-builders/docker'
@@ -58,7 +57,6 @@ images:
 # Opciones de construcción
 options:
   machineType: 'N1_HIGHCPU_8'
-  timeout: 1800s
   logging: CLOUD_LOGGING_ONLY
 
 # Variables de sustitución (configurar en Cloud Build Triggers)
