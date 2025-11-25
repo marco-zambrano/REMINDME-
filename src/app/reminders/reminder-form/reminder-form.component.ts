@@ -8,10 +8,11 @@ import { SupabaseService } from '../../services/supabase.service';
 import { Location } from '../../models';
 import { Category } from '../../models';
 import { CategoryService } from '../../services/category.service';
+import { IconNamePipe } from '../../shared/icon-name.pipe';
 
 @Component({
   selector: 'app-reminder-form',
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, IconNamePipe],
   templateUrl: './reminder-form.component.html',
   styleUrls: ['./reminder-form.component.css'],
 })

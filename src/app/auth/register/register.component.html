@@ -1,15 +1,15 @@
-<div class="min-h-screen bg-gradient-to-br from-green-50 via-teal-50 to-cyan-50 flex items-center justify-center p-4">
+<div class="min-h-screen bg-linear-to-br from-green-50 via-teal-50 to-cyan-50 flex items-center justify-center p-4">
   <div class="w-full max-w-md">
     <!-- Logo y Título Animado -->
     <div class="text-center mb-8 animate-fade-in">
       <div class="inline-block mb-4 relative">
         <div class="absolute inset-0 bg-green-500 rounded-full blur-2xl opacity-20 animate-pulse"></div>
-        <div class="relative bg-gradient-to-br from-green-600 to-cyan-600 rounded-3xl p-6 shadow-2xl transform hover:scale-105 transition-transform duration-300">
-          <span class="text-6xl">📍</span>
+        <div class="relative bg-linear-to-br from-green-600 to-cyan-600 rounded-3xl p-6 shadow-2xl transform hover:scale-105 transition-transform duration-300">
+          <span class="material-symbols-rounded text-white" style="font-size: 3.5rem;">location_on</span>
         </div>
       </div>
       <h1 class="text-4xl font-bold text-gray-800 mb-2">
-        <span class="bg-gradient-to-r from-green-600 to-cyan-600 bg-clip-text text-transparent">
+        <span class="bg-linear-to-r from-green-600 to-cyan-600 bg-clip-text text-transparent">
           RemindMe
         </span>
       </h1>
@@ -28,7 +28,7 @@
           </label>
           <div class="relative">
             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <span class="text-gray-400 text-lg">📧</span>
+              <span class="material-symbols-rounded text-gray-400">mail</span>
             </div>
             <input
               class="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none transition-all duration-200 placeholder:text-gray-300 placeholder:text-sm"
@@ -50,7 +50,7 @@
           </label>
           <div class="relative">
             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <span class="text-gray-400 text-lg">🔒</span>
+              <span class="material-symbols-rounded text-gray-400">lock</span>
             </div>
             <input
               class="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none transition-all duration-200 placeholder:text-gray-300 placeholder:text-sm"
@@ -64,20 +64,20 @@
             La contraseña debe tener al menos 6 caracteres
           </p>
           <p class="text-xs text-gray-500 mt-1 flex items-center gap-1">
-            <span>💡</span>
+            <span class="material-symbols-rounded text-gray-500">lightbulb</span>
             <span>Usa una contraseña segura</span>
           </p>
         </div>
 
         <!-- Error Message -->
         <div *ngIf="error" class="bg-red-50 border border-red-200 rounded-xl p-3 flex items-center gap-2">
-          <span class="text-red-500 text-lg">⚠️</span>
+          <span class="material-symbols-rounded text-red-500">warning</span>
           <p class="text-sm text-red-700">{{ error }}</p>
         </div>
 
         <!-- Success Message -->
         <div *ngIf="success" class="bg-green-50 border border-green-200 rounded-xl p-3 flex items-center gap-2">
-          <span class="text-green-500 text-lg">✅</span>
+          <span class="material-symbols-rounded text-green-500">check_circle</span>
           <p class="text-sm text-green-700">{{ success }}</p>
         </div>
 
@@ -85,10 +85,10 @@
         <button
           type="submit"
           [disabled]="loading || form.invalid"
-          class="w-full bg-gradient-to-r from-green-600 to-cyan-600 hover:from-green-700 hover:to-cyan-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg transform transition-all duration-200 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+          class="w-full bg-linear-to-r from-green-600 to-cyan-600 hover:from-green-700 hover:to-cyan-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg transform transition-all duration-200 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
         >
           <span *ngIf="!loading" class="flex items-center justify-center gap-2">
-            <span>✨</span>
+            <span class="material-symbols-rounded">auto_awesome</span>
             <span>Crear mi cuenta</span>
           </span>
           <span *ngIf="loading" class="flex items-center justify-center gap-2">
@@ -116,7 +116,7 @@
           class="block w-full text-center bg-gray-50 hover:bg-gray-100 text-gray-700 font-semibold py-3 px-6 rounded-xl border-2 border-gray-200 transition-all duration-200 hover:border-gray-300"
         >
           <span class="flex items-center justify-center gap-2">
-            <span>←</span>
+            <span class="material-symbols-rounded">arrow_back</span>
             <span>Iniciar sesión</span>
           </span>
         </a>

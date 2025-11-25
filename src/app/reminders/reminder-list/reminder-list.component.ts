@@ -11,10 +11,11 @@ import { Reminder, ReminderStats } from '../../models';
 import { Category } from '../../models';
 import { CategoryService } from '../../services/category.service';
 import { User } from '@supabase/supabase-js';
+import { IconNamePipe } from '../../shared/icon-name.pipe';
 
 @Component({
   selector: 'app-reminder-list',
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, IconNamePipe],
   templateUrl: './reminder-list.component.html',
   styleUrls: ['./reminder-list.component.css'],
 })

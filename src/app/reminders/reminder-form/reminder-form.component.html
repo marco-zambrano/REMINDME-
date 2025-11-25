@@ -6,10 +6,12 @@
         routerLink="/reminders"
         class="text-blue-600 hover:text-blue-700 font-medium mb-4 inline-block"
       >
-        ← Volver a la lista
+        <span class="material-symbols-rounded align-middle mr-1">arrow_back</span>
+        Volver a la lista
       </a>
       <h1 class="text-3xl font-bold text-gray-900">
-        {{ isEditMode() ? '✏️ Editar Recordatorio' : '+ Nuevo Recordatorio' }}
+        <span class="material-symbols-rounded align-middle mr-2">{{ isEditMode() ? 'edit' : 'add' }}</span>
+        {{ isEditMode() ? 'Editar Recordatorio' : 'Nuevo Recordatorio' }}
       </h1>
       <p class="text-gray-600 mt-2">
         {{
@@ -80,7 +82,7 @@
               "
               class="flex flex-col items-center justify-center p-4 border-2 rounded-lg transition-all cursor-pointer"
             >
-              <span class="text-3xl mb-2">{{ cat.icon || '📌' }}</span>
+              <span class="material-symbols-rounded text-3xl mb-2">{{ (cat.icon || '📌') | iconName }}</span>
               <span class="text-sm font-medium">{{ cat.name }}</span>
             </button>
             }
@@ -96,7 +98,10 @@
         <div class="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg">
           <div class="flex items-start justify-between">
             <div class="flex-1">
-              <p class="text-sm font-medium text-gray-900 mb-1">📍 {{ locationName() }}</p>
+              <p class="text-sm font-medium text-gray-900 mb-1">
+                <span class="material-symbols-rounded align-middle mr-1">location_on</span>
+                {{ locationName() }}
+              </p>
               <p class="text-xs text-gray-600">{{ locationAddress() }}</p>
               <p class="text-xs text-gray-500 mt-1">
                 @if (location()) {
@@ -128,8 +133,13 @@
             [disabled]="isLoadingLocation()"
             class="flex-1 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 transition-colors font-medium"
           >
-            @if (isLoadingLocation()) { 🔄 Obteniendo ubicación... } @else { 📍 Usar ubicación
-            actual }
+            @if (isLoadingLocation()) { 
+              <span class="material-symbols-rounded align-middle mr-1">refresh</span>
+              Obteniendo ubicación...
+            } @else { 
+              <span class="material-symbols-rounded align-middle mr-1">location_on</span>
+              Usar ubicación actual 
+            }
           </button>
 
           <button
@@ -137,7 +147,8 @@
             (click)="setManualLocation()"
             class="flex-1 px-4 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors font-medium"
           >
-            ⌨️ Ingresar coordenadas
+            <span class="material-symbols-rounded align-middle mr-1">keyboard</span>
+            Ingresar coordenadas
           </button>
         </div>
 
@@ -228,8 +239,12 @@
           [disabled]="isSaving()"
           class="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 transition-colors font-medium text-lg"
         >
-          @if (isSaving()) { 💾 Guardando... } @else {
-          {{ isEditMode() ? '💾 Actualizar Recordatorio' : '✓ Crear Recordatorio' }}
+          @if (isSaving()) {
+            <span class="material-symbols-rounded align-middle mr-2">save</span>
+            Guardando...
+          } @else {
+            <span class="material-symbols-rounded align-middle mr-2">{{ isEditMode() ? 'save' : 'check' }}</span>
+            {{ isEditMode() ? 'Actualizar Recordatorio' : 'Crear Recordatorio' }}
           }
         </button>
 
@@ -246,7 +261,10 @@
 
     <!-- Help Text -->
     <div class="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-      <h3 class="text-sm font-medium text-blue-900 mb-2">💡 Consejos:</h3>
+      <h3 class="text-sm font-medium text-blue-900 mb-2">
+        <span class="material-symbols-rounded align-middle mr-1">lightbulb</span>
+        Consejos:
+      </h3>
       <ul class="text-sm text-blue-800 space-y-1 list-disc list-inside">
         <li>Asegúrate de que tu navegador tenga permisos de ubicación activados</li>
         <li>Un radio de 500m es ideal para la mayoría de situaciones</li>
