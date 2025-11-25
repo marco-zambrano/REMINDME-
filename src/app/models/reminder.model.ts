@@ -17,7 +17,7 @@ export interface Reminder {
   userId: string;
   title: string;
   description: string;
-  category: ReminderCategory;
+  category: string;
   location: Location;
   radius: number; //radio en metros
   completed: boolean;
@@ -28,7 +28,7 @@ export interface Reminder {
 }
 
 export interface ReminderFilter {
-  category?: ReminderCategory;
+  category?: string;
   completed?: boolean;
   userId?: string;
 }
@@ -37,5 +37,5 @@ export interface ReminderStats {
   total: number;
   active: number;
   completed: number;
-  byCategory: Record<ReminderCategory, number>;
+  byCategory: Record<string, number>;
 }

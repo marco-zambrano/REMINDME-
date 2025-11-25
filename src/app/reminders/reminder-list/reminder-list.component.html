@@ -40,19 +40,49 @@
             class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
             title="Cerrar sesión"
           >
-            🚪 Salir
+            Salir
           </button>
         </div>
       </div>
     </div>
   </header>
 
+  <!-- Mini modal: Crear nueva categoría -->
+  @if (showNewCategoryModal()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center">
+    <div class="absolute inset-0 bg-black/40" (click)="closeNewCategoryModal()"></div>
+    <div class="relative bg-white rounded-lg shadow-xl w-full max-w-md mx-4 p-5">
+      <h3 class="text-lg font-semibold text-gray-900 mb-4">Crear nueva categoría</h3>
+      <div class="space-y-3">
+        <div>
+          <label class="block text-xs text-gray-600 mb-1">Nombre</label>
+          <input [ngModel]="newCategoryName()" (ngModelChange)="newCategoryName.set($event)" class="w-full px-3 py-2 border rounded" placeholder="Ej: Hogar" />
+        </div>
+        <div class="flex gap-3">
+          <div class="flex-1">
+            <label class="block text-xs text-gray-600 mb-1">Icono (emoji)</label>
+            <input [ngModel]="newCategoryIcon()" (ngModelChange)="newCategoryIcon.set($event)" class="w-full px-3 py-2 border rounded" placeholder="😀" />
+          </div>
+          <div class="flex-1">
+            <label class="block text-xs text-gray-600 mb-1">Color (Tailwind)</label>
+            <input [ngModel]="newCategoryColor()" (ngModelChange)="newCategoryColor.set($event)" class="w-full px-3 py-2 border rounded" placeholder="bg-gray-500" />
+          </div>
+        </div>
+      </div>
+      <div class="mt-5 flex justify-end gap-2">
+        <button (click)="closeNewCategoryModal()" class="px-4 py-2 rounded bg-gray-200 text-gray-700 hover:bg-gray-300 text-sm font-medium">Cancelar</button>
+        <button (click)="addCategory()" class="px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700 text-sm font-medium">Crear</button>
+      </div>
+    </div>
+  </div>
+  }
+
   <!-- Stats Cards -->
   <div class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
       <div class="bg-white rounded-lg shadow p-5">
         <div class="flex items-center">
-          <div class="flex-shrink-0 bg-blue-500 rounded-md p-3">
+          <div class="shrink-0 bg-blue-500 rounded-md p-3">
             <span class="text-2xl">📋</span>
           </div>
           <div class="ml-5 w-0 flex-1">
@@ -66,7 +96,7 @@
 
       <div class="bg-white rounded-lg shadow p-5">
         <div class="flex items-center">
-          <div class="flex-shrink-0 bg-green-500 rounded-md p-3">
+          <div class="shrink-0 bg-green-500 rounded-md p-3">
             <span class="text-2xl">✓</span>
           </div>
           <div class="ml-5 w-0 flex-1">
@@ -80,7 +110,7 @@
 
       <div class="bg-white rounded-lg shadow p-5">
         <div class="flex items-center">
-          <div class="flex-shrink-0 bg-purple-500 rounded-md p-3">
+          <div class="shrink-0 bg-purple-500 rounded-md p-3">
             <span class="text-2xl">✓</span>
           </div>
           <div class="ml-5 w-0 flex-1">
@@ -94,7 +124,7 @@
 
       <div class="bg-white rounded-lg shadow p-5">
         <div class="flex items-center">
-          <div class="flex-shrink-0 bg-orange-500 rounded-md p-3">
+          <div class="shrink-0 bg-orange-500 rounded-md p-3">
             <span class="text-2xl">📍</span>
           </div>
           <div class="ml-5 w-0 flex-1">
@@ -155,11 +185,11 @@
         </fieldset>
 
         <!-- Category Filter -->
-        <fieldset class="mb-0">
+        <fieldset class="mb-0 flex-1 min-w-[300px]">
           <legend id="category-legend" class="block text-sm font-medium text-gray-700 mb-2">
             Categoría
           </legend>
-          <fieldset aria-labelledby="category-legend" class="flex gap-2">
+          <div class="flex flex-wrap gap-2 items-center">
             <button
               (click)="setCategory('all')"
               [class]="
@@ -171,52 +201,40 @@
             >
               Todas
             </button>
-            <button
-              (click)="setCategory(ReminderCategory.PERSONAL)"
-              [class]="
-                selectedCategory() === ReminderCategory.PERSONAL
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-200 text-gray-700'
-              "
-              class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-            >
-              👤 Personal
-            </button>
-            <button
-              (click)="setCategory(ReminderCategory.TRABAJO)"
-              [class]="
-                selectedCategory() === ReminderCategory.TRABAJO
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-200 text-gray-700'
-              "
-              class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-            >
-              💼 Trabajo
-            </button>
-            <button
-              (click)="setCategory(ReminderCategory.COMPRAS)"
-              [class]="
-                selectedCategory() === ReminderCategory.COMPRAS
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-200 text-gray-700'
-              "
-              class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-            >
-              🛒 Compras
-            </button>
-            <button
-              (click)="setCategory(ReminderCategory.SALUD)"
-              [class]="
-                selectedCategory() === ReminderCategory.SALUD
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-200 text-gray-700'
-              "
-              class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-            >
-              🏥 Salud
-            </button>
-          </fieldset>
+            @for (cat of categories(); track cat.slug) {
+            <div class="flex items-center">
+              <button
+                (click)="setCategory(cat.slug)"
+                [class]="
+                  selectedCategory() === cat.slug
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-200 text-gray-700'
+                "
+                class="px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-1"
+                title="Filtrar por {{ cat.name }}"
+              >
+                <span class="text-base">{{ cat.icon || '📌' }}</span>
+                <span>{{ cat.name }}</span>
+              </button>
+              <button
+                type="button"
+                (click)="removeCategory(cat.slug)"
+                class="ml-1 text-red-600 hover:text-red-700 text-xs"
+                title="Eliminar categoría"
+              >
+                ✖
+              </button>
+            </div>
+            }
+          </div>
         </fieldset>
+
+        <!-- Create Category (opens modal) -->
+        <div class="flex items-end gap-2">
+          <button (click)="openNewCategoryModal()" class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-sm font-medium">
+            + Crear nueva categoría
+          </button>
+        </div>
 
         <!-- Refresh Button -->
         <div class="ml-auto flex items-end">

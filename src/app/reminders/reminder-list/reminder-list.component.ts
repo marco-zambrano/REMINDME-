@@ -1,17 +1,20 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { ReminderService } from '../../services/reminder.service';
 import { NotificationService } from '../../services/notification.service';
 import { GeolocationService } from '../../services/geolocation.service';
 import { SupabaseService } from '../../services/supabase.service';
 import { PwaService } from '../../services/pwa.service';
-import { Reminder, ReminderCategory, ReminderStats } from '../../models';
+import { Reminder, ReminderStats } from '../../models';
+import { Category } from '../../models';
+import { CategoryService } from '../../services/category.service';
 import { User } from '@supabase/supabase-js';
 
 @Component({
   selector: 'app-reminder-list',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './reminder-list.component.html',
   styleUrls: ['./reminder-list.component.css'],
 })
@@ -22,6 +25,7 @@ export class ReminderListComponent implements OnInit {
   private readonly supabaseService = inject(SupabaseService);
   private readonly pwaService = inject(PwaService);
   private readonly router = inject(Router);
+  private readonly categoryService = inject(CategoryService);
 
   // Señales para estado reactivo
   reminders = signal<Reminder[]>([]);
@@ -32,21 +36,20 @@ export class ReminderListComponent implements OnInit {
     total: 0,
     active: 0,
     completed: 0,
-    byCategory: {
-      [ReminderCategory.PERSONAL]: 0,
-      [ReminderCategory.TRABAJO]: 0,
-      [ReminderCategory.COMPRAS]: 0,
-      [ReminderCategory.SALUD]: 0,
-    },
+    byCategory: {},
   });
 
   selectedFilter = signal<'all' | 'active' | 'completed'>('active');
-  selectedCategory = signal<ReminderCategory | 'all'>('all');
+  selectedCategory = signal<string | 'all'>('all');
   isMonitoring = signal(false);
   currentLocation = signal<{ latitude: number; longitude: number } | null>(null);
+  categories = signal<Category[]>([]);
+  // Inputs para crear categoría
+  newCategoryName = signal('');
+  newCategoryIcon = signal('');
+  newCategoryColor = signal('');
+  showNewCategoryModal = signal(false);
 
-  // Enum para usar en el template
-  ReminderCategory = ReminderCategory;
 
   ngOnInit() {
     this.initializeComponent();
@@ -66,6 +69,23 @@ export class ReminderListComponent implements OnInit {
       this.filterReminders();
       this.loadStats(); // Actualizar estadísticas automáticamente
     });
+
+    // Cargar categorías dinámicas
+    this.categories.set(this.categoryService.getCategories());
+    this.categoryService.categories$.subscribe((cats) => {
+      this.categories.set(cats);
+    });
+  }
+
+  openNewCategoryModal() {
+    this.newCategoryName.set('');
+    this.newCategoryIcon.set('');
+    this.newCategoryColor.set('');
+    this.showNewCategoryModal.set(true);
+  }
+
+  closeNewCategoryModal() {
+    this.showNewCategoryModal.set(false);
   }
 
   private async initializeComponent() {
@@ -117,7 +137,7 @@ export class ReminderListComponent implements OnInit {
     this.filterReminders();
   }
 
-  setCategory(category: ReminderCategory | 'all') {
+  setCategory(category: string | 'all') {
     this.selectedCategory.set(category);
     this.filterReminders();
   }
@@ -190,24 +210,39 @@ export class ReminderListComponent implements OnInit {
     return this.geolocationService.formatDistance(distance);
   }
 
-  getCategoryIcon(category: ReminderCategory): string {
-    const icons = {
-      [ReminderCategory.PERSONAL]: '👤',
-      [ReminderCategory.TRABAJO]: '💼',
-      [ReminderCategory.COMPRAS]: '🛒',
-      [ReminderCategory.SALUD]: '🏥',
-    };
-    return icons[category] || '📌';
+  getCategoryIcon(category: string): string {
+    const c = this.categories().find((x) => x.slug === category);
+    return c?.icon || '📌';
   }
 
-  getCategoryColor(category: ReminderCategory): string {
-    const colors = {
-      [ReminderCategory.PERSONAL]: 'bg-blue-500',
-      [ReminderCategory.TRABAJO]: 'bg-purple-500',
-      [ReminderCategory.COMPRAS]: 'bg-green-500',
-      [ReminderCategory.SALUD]: 'bg-red-500',
-    };
-    return colors[category] || 'bg-gray-500';
+  getCategoryColor(category: string): string {
+    const c = this.categories().find((x) => x.slug === category);
+    return c?.color || 'bg-gray-500';
+  }
+
+  addCategory() {
+    const name = this.newCategoryName().trim();
+    if (!name) {
+      alert('Ingresa un nombre para la categoría');
+      return;
+    }
+    const icon = this.newCategoryIcon().trim() || '📌';
+    const color = this.newCategoryColor().trim() || 'bg-gray-500';
+    this.categoryService.addCategory({ name, icon, color });
+    this.newCategoryName.set('');
+    this.newCategoryIcon.set('');
+    this.newCategoryColor.set('');
+    this.showNewCategoryModal.set(false);
+  }
+
+  removeCategory(slug: string) {
+    if (!confirm('¿Eliminar esta categoría? Los recordatorios existentes conservarán el slug.')) {
+      return;
+    }
+    this.categoryService.removeCategory(slug);
+    if (this.selectedCategory() === slug) {
+      this.setCategory('all');
+    }
   }
 
   async refresh() {

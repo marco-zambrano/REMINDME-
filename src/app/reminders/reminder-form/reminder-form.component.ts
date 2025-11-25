@@ -5,7 +5,9 @@ import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { ReminderService } from '../../services/reminder.service';
 import { GeolocationService } from '../../services/geolocation.service';
 import { SupabaseService } from '../../services/supabase.service';
-import { ReminderCategory, Location } from '../../models';
+import { Location } from '../../models';
+import { Category } from '../../models';
+import { CategoryService } from '../../services/category.service';
 
 @Component({
   selector: 'app-reminder-form',
@@ -19,6 +21,7 @@ export class ReminderFormComponent implements OnInit {
   private readonly supabaseService = inject(SupabaseService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
+  private readonly categoryService = inject(CategoryService);
 
   // Estado del formulario
   isEditMode = signal(false);
@@ -28,7 +31,7 @@ export class ReminderFormComponent implements OnInit {
   // Datos del formulario
   title = signal('');
   description = signal('');
-  category = signal<ReminderCategory>(ReminderCategory.PERSONAL);
+  category = signal<string>('personal');
   radius = signal(500);
 
   // Ubicación
@@ -37,13 +40,8 @@ export class ReminderFormComponent implements OnInit {
   locationAddress = signal('');
   isLoadingLocation = signal(false);
 
-  // Opciones de categoría
-  categories = [
-    { value: ReminderCategory.PERSONAL, label: 'Personal', icon: '👤' },
-    { value: ReminderCategory.TRABAJO, label: 'Trabajo', icon: '💼' },
-    { value: ReminderCategory.COMPRAS, label: 'Compras', icon: '🛒' },
-    { value: ReminderCategory.SALUD, label: 'Salud', icon: '🏥' },
-  ];
+  // Categorías dinámicas
+  categories = signal<Category[]>([]);
 
   // Opciones de radio predefinidas
   radiusOptions = [
@@ -65,6 +63,15 @@ export class ReminderFormComponent implements OnInit {
       // Modo creación: obtener ubicación actual
       this.getCurrentLocation();
     }
+
+    // Cargar categorías dinámicas
+    this.categories.set(this.categoryService.getCategories());
+    this.categoryService.categories$.subscribe((cats) => {
+      this.categories.set(cats);
+      if (!this.isEditMode() && !this.category()) {
+        this.category.set(cats[0]?.slug || 'personal');
+      }
+    });
   }
 
   async loadReminder(id: string) {
@@ -205,7 +212,7 @@ export class ReminderFormComponent implements OnInit {
     }
   }
 
-  updateCategory(category: ReminderCategory) {
+  updateCategory(category: string) {
     this.category.set(category);
   }
 

@@ -69,19 +69,19 @@
             aria-labelledby="category-legend"
             class="grid grid-cols-2 md:grid-cols-4 gap-3 border-0 p-0 m-0"
           >
-            @for (cat of categories; track cat.value) {
+            @for (cat of categories(); track cat.slug) {
             <button
               type="button"
-              (click)="updateCategory(cat.value)"
+              (click)="updateCategory(cat.slug)"
               [class]="
-                category() === cat.value
+                category() === cat.slug
                   ? 'border-blue-500 bg-blue-50'
                   : 'border-gray-300 hover:border-gray-400'
               "
               class="flex flex-col items-center justify-center p-4 border-2 rounded-lg transition-all cursor-pointer"
             >
-              <span class="text-3xl mb-2">{{ cat.icon }}</span>
-              <span class="text-sm font-medium">{{ cat.label }}</span>
+              <span class="text-3xl mb-2">{{ cat.icon || '📌' }}</span>
+              <span class="text-sm font-medium">{{ cat.name }}</span>
             </button>
             }
           </fieldset>

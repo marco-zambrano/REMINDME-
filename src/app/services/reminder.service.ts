@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { SupabaseService } from './supabase.service';
-import { Reminder, ReminderCategory, ReminderFilter, ReminderStats } from '../models';
+import { Reminder, ReminderFilter, ReminderStats } from '../models';
 
 @Injectable({
   providedIn: 'root',
@@ -192,16 +192,12 @@ export class ReminderService {
       total: allReminders.length,
       active: allReminders.filter((r) => !r.completed).length,
       completed: allReminders.filter((r) => r.completed).length,
-      byCategory: {
-        [ReminderCategory.PERSONAL]: 0,
-        [ReminderCategory.TRABAJO]: 0,
-        [ReminderCategory.COMPRAS]: 0,
-        [ReminderCategory.SALUD]: 0,
-      },
+      byCategory: {},
     };
 
     for (const reminder of allReminders) {
-      stats.byCategory[reminder.category]++;
+      const key = reminder.category || 'sin-categoria';
+      stats.byCategory[key] = (stats.byCategory[key] ?? 0) + 1;
     }
 
     return stats;
@@ -212,7 +208,7 @@ export class ReminderService {
    * @param category Categoría
    * @returns Lista de recordatorios
    */
-  async getRemindersByCategory(category: ReminderCategory): Promise<Reminder[]> {
+  async getRemindersByCategory(category: string): Promise<Reminder[]> {
     return this.getReminders({ category });
   }
 
