@@ -1,70 +1,69 @@
 <div class="min-h-screen bg-linear-to-br from-green-50 via-teal-50 to-cyan-50 flex items-center justify-center p-4">
-  <div class="w-full max-w-md">
+  <div class="w-full max-w-md mx-auto">
     <!-- Logo y Título Animado -->
     <div class="text-center mb-8 animate-fade-in">
       <div class="inline-block mb-4 relative">
         <div class="absolute inset-0 bg-green-500 rounded-full blur-2xl opacity-20 animate-pulse"></div>
-        <div class="relative bg-linear-to-br from-green-600 to-cyan-600 rounded-3xl p-6 shadow-2xl transform hover:scale-105 transition-transform duration-300">
+        <div
+          class="relative bg-linear-to-br from-green-600 to-cyan-600 rounded-3xl p-6 sm:p-7 shadow-2xl transform hover:scale-105 transition-transform duration-300">
           <span class="material-symbols-rounded text-white" style="font-size: 3.5rem;">location_on</span>
         </div>
       </div>
-      <h1 class="text-4xl font-bold text-gray-800 mb-2">
+
+      <h1 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-2">
         <span class="bg-linear-to-r from-green-600 to-cyan-600 bg-clip-text text-transparent">
           RemindMe
         </span>
       </h1>
-      <p class="text-gray-600 text-sm">Comienza a organizar tus recordatorios</p>
+      <p class="text-gray-600 text-xs sm:text-sm">Comienza a organizar tus recordatorios</p>
     </div>
 
     <!-- Formulario de Registro -->
-    <div class="bg-white rounded-2xl shadow-xl p-8 backdrop-blur-sm border border-gray-100">
-      <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Crear cuenta</h2>
+    <div class="bg-white rounded-2xl shadow-xl p-6 sm:p-8 backdrop-blur-sm border border-gray-100">
+      <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-6 text-center">Crear cuenta</h2>
 
       <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-5">
         <!-- Email Input -->
-        <div class="relative">
-          <label class="block text-sm font-medium text-gray-700 mb-2">
-            Correo electrónico
-          </label>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Correo electrónico</label>
           <div class="relative">
             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
               <span class="material-symbols-rounded text-gray-400">mail</span>
             </div>
-            <input
-              class="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none transition-all duration-200 placeholder:text-gray-300 placeholder:text-sm"
-              type="email"
-              formControlName="email"
+
+            <input type="email" formControlName="email"
+              class="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-2
+              focus:ring-green-200 outline-none transition-all duration-200 placeholder:text-gray-300 placeholder:text-sm"
               placeholder="Ingresa tu correo electrónico"
-              [class.border-red-300]="form.get('email')?.invalid && form.get('email')?.touched"
-            />
+              [class.border-red-300]="form.get('email')?.invalid && form.get('email')?.touched" />
           </div>
+
           <p *ngIf="form.get('email')?.invalid && form.get('email')?.touched" class="text-xs text-red-500 mt-1">
             Ingresa un email válido
           </p>
         </div>
 
         <!-- Password Input -->
-        <div class="relative">
-          <label class="block text-sm font-medium text-gray-700 mb-2">
-            Contraseña
-          </label>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Contraseña</label>
           <div class="relative">
             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
               <span class="material-symbols-rounded text-gray-400">lock</span>
             </div>
-            <input
-              class="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none transition-all duration-200 placeholder:text-gray-300 placeholder:text-sm"
-              type="password"
-              formControlName="password"
+
+            <input type="password" formControlName="password"
+              class="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-2
+              focus:ring-green-200 outline-none transition-all duration-200 placeholder:text-gray-300 placeholder:text-sm"
               placeholder="Crea una contraseña segura"
-              [class.border-red-300]="form.get('password')?.invalid && form.get('password')?.touched"
-            />
+              [class.border-red-300]="form.get('password')?.invalid && form.get('password')?.touched" />
           </div>
+
           <p *ngIf="form.get('password')?.invalid && form.get('password')?.touched" class="text-xs text-red-500 mt-1">
             La contraseña debe tener al menos 6 caracteres
           </p>
+
           <p class="text-xs text-gray-500 mt-1 flex items-center gap-1">
-            <span class="material-symbols-rounded text-gray-500">lightbulb</span>
+            <span class="material-symbols-rounded text-gray-500 text-sm">lightbulb</span>
             <span>Usa una contraseña segura</span>
           </p>
         </div>
@@ -82,19 +81,22 @@
         </div>
 
         <!-- Submit Button -->
-        <button
-          type="submit"
-          [disabled]="loading || form.invalid"
-          class="w-full bg-linear-to-r from-green-600 to-cyan-600 hover:from-green-700 hover:to-cyan-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg transform transition-all duration-200 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-        >
+        <button type="submit" [disabled]="loading || form.invalid"
+          class="w-full bg-linear-to-r from-green-600 to-cyan-600 hover:from-green-700 hover:to-cyan-700 text-white
+          font-semibold py-3 px-6 rounded-xl shadow-lg transform transition-all duration-200 hover:scale-[1.02]
+          disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
+
           <span *ngIf="!loading" class="flex items-center justify-center gap-2">
             <span class="material-symbols-rounded">auto_awesome</span>
             <span>Crear mi cuenta</span>
           </span>
+
           <span *ngIf="loading" class="flex items-center justify-center gap-2">
             <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              <path class="opacity-75" fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 
+                3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
             <span>Creando cuenta...</span>
           </span>
@@ -111,43 +113,44 @@
         </div>
 
         <!-- Login Link -->
-        <a
-          routerLink="/login"
-          class="block w-full text-center bg-gray-50 hover:bg-gray-100 text-gray-700 font-semibold py-3 px-6 rounded-xl border-2 border-gray-200 transition-all duration-200 hover:border-gray-300"
-        >
-          <span class="flex items-center justify-center gap-2">
+        <a routerLink="/login"
+          class="block w-full text-center bg-gray-50 hover:bg-gray-100 text-gray-700 font-semibold py-3 px-6 rounded-xl
+          border-2 border-gray-200 transition-all duration-200 hover:border-gray-300">
+          <div class="flex items-center justify-center gap-2">
             <span class="material-symbols-rounded">arrow_back</span>
             <span>Iniciar sesión</span>
-          </span>
+          </div>
         </a>
       </form>
     </div>
 
-    <!-- Footer -->
-    <div class="text-center mt-6 text-sm text-gray-500">
+    <div class="text-center mt-6 text-xs sm:text-sm text-gray-500">
       <p>Al crear una cuenta, aceptas nuestros términos y condiciones</p>
     </div>
   </div>
 </div>
 
 <!-- Footer datos -->
-<footer class="w-full bg-gray-50 border-t border-gray-200 py-6">
-  <div class="max-w-4xl mx-auto px-4">
-    <div class="flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-gray-600">
+<footer class="w-full bg-gray-50 border-t border-gray-200 py-6 mt-8">
+  <div class="max-w-5xl mx-auto px-4">
+    <div class="flex flex-col sm:flex-row justify-between items-center gap-4 text-xs sm:text-sm text-gray-600">
+
       <!-- Información -->
-      <div class="flex items-center gap-2">
+      <div class="flex flex-wrap items-center justify-center gap-2">
         <span class="font-semibold text-gray-700">© 2025 RemindMe</span>
-        <span class="text-gray-400">|</span>
+        <span class="hidden sm:inline text-gray-400">|</span>
         <span>Todos los derechos reservados</span>
       </div>
 
       <!-- Links -->
-      <div class="flex items-center gap-4">
+      <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
         <span class="text-gray-600">Contacto: +593 98 765 4321</span>
-        <span class="text-gray-400">|</span>
-        <a href="/privacy-policy" class="hover:text-blue-600 transition-colors">Política de Privacidad</a>
-        <span class="text-gray-400">|</span>
-        <a href="/terms-of-service" class="hover:text-blue-600 transition-colors">Términos de Uso</a>
+
+        <span class="hidden sm:inline text-gray-400">|</span>
+        <a href="/privacy-policy" class="hover:text-green-600 transition-colors">Política de Privacidad</a>
+
+        <span class="hidden sm:inline text-gray-400">|</span>
+        <a href="/terms-of-service" class="hover:text-green-600 transition-colors">Términos de Uso</a>
       </div>
     </div>
   </div>
@@ -159,6 +162,7 @@
       opacity: 0;
       transform: translateY(-20px);
     }
+
     to {
       opacity: 1;
       transform: translateY(0);

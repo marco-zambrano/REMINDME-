@@ -1,11 +1,36 @@
-/* Input y textarea focus styling */
+/* ============================================
+   BASE STYLES
+   ============================================ */
+
+/* Reset de outline para inputs/textareas */
 input:focus,
 textarea:focus {
   outline: none;
 }
 
 /* Range slider personalizado */
+input[type='range'] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+}
+
+input[type='range']::-webkit-slider-track {
+  width: 100%;
+  height: 8px;
+  background: #e5e7eb;
+  border-radius: 4px;
+}
+
+input[type='range']::-moz-range-track {
+  width: 100%;
+  height: 8px;
+  background: #e5e7eb;
+  border-radius: 4px;
+}
+
 input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
   appearance: none;
   width: 20px;
   height: 20px;
@@ -13,11 +38,8 @@ input[type='range']::-webkit-slider-thumb {
   background: #2563eb;
   cursor: pointer;
   transition: all 0.2s ease;
-}
-
-input[type='range']::-webkit-slider-thumb:hover {
-  background: #1d4ed8;
-  transform: scale(1.1);
+  margin-top: -6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 input[type='range']::-moz-range-thumb {
@@ -28,14 +50,27 @@ input[type='range']::-moz-range-thumb {
   cursor: pointer;
   border: none;
   transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-input[type='range']::-moz-range-thumb:hover {
-  background: #1d4ed8;
-  transform: scale(1.1);
+@media (hover: hover) {
+  input[type='range']::-webkit-slider-thumb:hover {
+    background: #1d4ed8;
+    transform: scale(1.15);
+    box-shadow: 0 3px 6px rgba(37, 99, 235, 0.3);
+  }
+
+  input[type='range']::-moz-range-thumb:hover {
+    background: #1d4ed8;
+    transform: scale(1.15);
+    box-shadow: 0 3px 6px rgba(37, 99, 235, 0.3);
+  }
 }
 
-/* Animaciones */
+/* ============================================
+   ANIMACIONES
+   ============================================ */
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -47,13 +82,404 @@ input[type='range']::-moz-range-thumb:hover {
   }
 }
 
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 .bg-white {
   animation: fadeIn 0.3s ease-out;
 }
 
-/* Responsive */
-@media (max-width: 640px) {
-  .grid-cols-2 {
-    grid-template-columns: 1fr 1fr;
+/* ============================================
+   BREAKPOINT XS (Extra Small) - Custom
+   Para dispositivos muy pequeños
+   ============================================ */
+
+/* Definir breakpoint xs personalizado */
+@media (max-width: 374px) {
+  /* Header más compacto */
+  h1 {
+    font-size: 1.25rem !important;
+    line-height: 1.4;
+  }
+  
+  h1 .material-symbols-rounded {
+    font-size: 1.25rem !important;
+  }
+  
+  /* Reducir padding en cards */
+  .bg-white.rounded-lg.shadow {
+    padding: 0.75rem !important;
+  }
+  
+  /* Botones más compactos */
+  button {
+    padding: 0.625rem !important;
+    font-size: 0.75rem !important;
+  }
+  
+  /* Input y textarea más pequeños */
+  input[type="text"],
+  textarea {
+    padding: 0.5rem !important;
+    font-size: 0.875rem !important;
+  }
+  
+  /* Grid de categorías forzar 1 columna */
+  .grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ============================================
+   MÓVIL PEQUEÑO (375px - 479px)
+   ============================================ */
+@media (min-width: 375px) and (max-width: 479px) {
+  /* Ajustes de padding */
+  .max-w-3xl {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  /* Mejorar separación entre elementos */
+  .space-y-4 > * + * {
+    margin-top: 0.875rem !important;
+  }
+  
+  /* Botones de categoría apilados con mejor espaciado */
+  .grid > button {
+    padding: 0.875rem;
+  }
+}
+
+/* ============================================
+   MÓVIL MEDIANO (480px - 639px)
+   ============================================ */
+@media (min-width: 480px) and (max-width: 639px) {
+  /* Grid de categorías en 2 columnas */
+  .grid.xs\:grid-cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+  
+  /* Mejorar distribución de botones de radio */
+  .grid.grid-cols-2.xs\:grid-cols-3 {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+  }
+  
+  /* Botones de ubicación lado a lado */
+  .flex.flex-col.xs\:flex-row {
+    flex-direction: row;
+  }
+}
+
+/* ============================================
+   TABLET PEQUEÑA (640px - 767px)
+   ============================================ */
+@media (min-width: 640px) and (max-width: 767px) {
+  /* Aumentar padding de cards */
+  .bg-white.rounded-lg.shadow {
+    padding: 1.25rem;
+  }
+  
+  /* Grid de categorías mantener 2 columnas */
+  .grid.xs\:grid-cols-2.lg\:grid-cols-4 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  
+  /* Mejorar espaciado general */
+  .space-y-4 > * + * {
+    margin-top: 1.25rem !important;
+  }
+}
+
+/* ============================================
+   TABLET MEDIANA (768px - 1023px)
+   ============================================ */
+@media (min-width: 768px) and (max-width: 1023px) {
+  /* Grid de categorías mantener 2 columnas en tablets */
+  .grid.xs\:grid-cols-2.lg\:grid-cols-4 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+  }
+  
+  /* Botones de radio en línea */
+  .grid.grid-cols-2.xs\:grid-cols-3.sm\:grid-cols-6 {
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0.5rem;
+  }
+  
+  /* Aumentar padding de contenedor */
+  .max-w-3xl {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+/* ============================================
+   DESKTOP (1024px+)
+   ============================================ */
+@media (min-width: 1024px) {
+  /* Grid de categorías 4 columnas */
+  .grid.xs\:grid-cols-2.lg\:grid-cols-4 {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+  }
+  
+  /* Padding completo para cards */
+  .bg-white.rounded-lg.shadow {
+    padding: 1.5rem;
+  }
+  
+  /* Espaciado completo */
+  .space-y-4 > * + *,
+  .space-y-6 > * + * {
+    margin-top: 1.5rem !important;
+  }
+}
+
+/* ============================================
+   MEJORAS DE USABILIDAD TOUCH
+   ============================================ */
+
+/* Touch targets mínimos (44x44px según WCAG) */
+@media (max-width: 1023px) {
+  button,
+  a,
+  input[type="submit"],
+  label {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Áreas clickeables más grandes en móvil */
+  button {
+    padding: 0.75rem 1rem;
+  }
+  
+  /* Aumentar área de touch para checkbox/radio */
+  input[type="checkbox"],
+  input[type="radio"] {
+    min-width: 24px;
+    min-height: 24px;
+  }
+}
+
+/* ============================================
+   MEJORAS PARA ACCESIBILIDAD
+   ============================================ */
+
+/* Focus visible mejorado */
+*:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Reducir movimiento para usuarios que lo prefieran */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================
+   MEJORAS DE TEXTO Y LEGIBILIDAD
+   ============================================ */
+
+/* Mejorar tamaños de texto en móvil */
+@media (max-width: 639px) {
+  /* Prevenir zoom en inputs en iOS */
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+  
+  /* Mantener texto legible */
+  body {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+}
+
+/* ============================================
+   OPTIMIZACIONES DE PERFORMANCE
+   ============================================ */
+
+/* Hardware acceleration para animaciones */
+.bg-white,
+button,
+input[type='range']::-webkit-slider-thumb,
+input[type='range']::-moz-range-thumb {
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* ============================================
+   MEJORAS ESPECÍFICAS PARA SAFARI iOS
+   ============================================ */
+
+/* Fix para zoom en inputs */
+@supports (-webkit-touch-callout: none) {
+  input,
+  textarea,
+  select {
+    font-size: 16px;
+  }
+}
+
+/* Mejorar tap highlight en iOS */
+* {
+  -webkit-tap-highlight-color: rgba(37, 99, 235, 0.1);
+}
+
+/* ============================================
+   DARK MODE SOPORTE (Opcional)
+   ============================================ */
+
+@media (prefers-color-scheme: dark) {
+  /* Si en el futuro quieres implementar modo oscuro */
+  /* Puedes descomentar y ajustar estos estilos */
+  
+  /*
+  .bg-gray-50 {
+    background-color: #1a1a1a !important;
+  }
+  
+  .bg-white {
+    background-color: #2d2d2d !important;
+  }
+  
+  .text-gray-900 {
+    color: #f5f5f5 !important;
+  }
+  */
+}
+
+/* ============================================
+   UTILIDADES RESPONSIVE ADICIONALES
+   ============================================ */
+
+/* Ocultar elementos en móvil si es necesario */
+@media (max-width: 639px) {
+  .hide-on-mobile {
+    display: none !important;
+  }
+}
+
+/* Mostrar solo en móvil */
+@media (min-width: 640px) {
+  .show-on-mobile-only {
+    display: none !important;
+  }
+}
+
+/* Scroll suave en toda la página */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Mejorar scroll en iOS */
+.overflow-auto,
+.overflow-scroll {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ============================================
+   MEJORAS PARA MATERIAL ICONS
+   ============================================ */
+
+.material-symbols-rounded {
+  /* Asegurar alineación vertical */
+  vertical-align: middle;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  
+  /* Optimización de renderizado */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* ============================================
+   FOOTER RESPONSIVE
+   ============================================ */
+
+footer {
+  position: relative;
+}
+
+@media (max-width: 639px) {
+  footer .flex.flex-col.sm\:flex-row {
+    text-align: center;
+  }
+  
+  footer a {
+    padding: 0.5rem;
+  }
+}
+
+/* ============================================
+   LANDSCAPE MODE (Dispositivos en horizontal)
+   ============================================ */
+
+@media (max-height: 500px) and (orientation: landscape) {
+  /* Reducir padding vertical en modo landscape */
+  .py-4,
+  .py-6,
+  .py-8 {
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+  }
+  
+  /* Hacer formulario más compacto */
+  .space-y-4 > * + *,
+  .space-y-6 > * + * {
+    margin-top: 0.75rem !important;
+  }
+  
+  /* Reducir altura de textarea */
+  textarea {
+    min-height: 60px !important;
+  }
+}
+
+/* ============================================
+   PRINT STYLES (Opcional)
+   ============================================ */
+
+@media print {
+  /* Ocultar elementos no necesarios al imprimir */
+  button,
+  footer,
+  .no-print {
+    display: none !important;
+  }
+  
+  /* Optimizar para impresión */
+  .bg-white {
+    box-shadow: none !important;
+  }
+  
+  * {
+    background: white !important;
+    color: black !important;
   }
 }
