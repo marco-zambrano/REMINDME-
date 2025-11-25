@@ -81,4 +81,9 @@ export class SupabaseService {
   getCurrentUser(): User | null {
     return this.currentUser.value;
   }
+
+  // Exponer el cliente de Supabase para consultas a tablas
+  getClient(): SupabaseClient {
+    return this.supabase;
+  }
 }

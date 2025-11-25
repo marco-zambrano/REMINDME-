@@ -32,7 +32,7 @@ export class ReminderFormComponent implements OnInit {
   // Datos del formulario
   title = signal('');
   description = signal('');
-  category = signal<string>('personal');
+  category = signal<string>('');
   radius = signal(500);
 
   // Ubicación
@@ -67,10 +67,11 @@ export class ReminderFormComponent implements OnInit {
 
     // Cargar categorías dinámicas
     this.categories.set(this.categoryService.getCategories());
+    this.categoryService.refresh();
     this.categoryService.categories$.subscribe((cats) => {
       this.categories.set(cats);
       if (!this.isEditMode() && !this.category()) {
-        this.category.set(cats[0]?.slug || 'personal');
+        this.category.set(cats[0]?.slug || '');
       }
     });
   }

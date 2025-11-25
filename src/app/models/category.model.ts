@@ -1,4 +1,5 @@
 export interface Category {
+  id?: string;
   name: string; // Display name
   slug: string; // Unique id (kebab-case)
   icon: string; // Emoji or icon text

@@ -79,6 +79,7 @@ export class ReminderListComponent implements OnInit {
 
     // Cargar categorías dinámicas
     this.categories.set(this.categoryService.getCategories());
+    this.categoryService.refresh();
     this.categoryService.categories$.subscribe((cats) => {
       this.categories.set(cats);
     });
@@ -226,7 +227,7 @@ export class ReminderListComponent implements OnInit {
     return c?.color || 'bg-gray-500';
   }
 
-  addCategory() {
+  async addCategory() {
     const name = this.newCategoryName().trim();
     if (!name) {
       alert('Ingresa un nombre para la categoría');
@@ -235,7 +236,11 @@ export class ReminderListComponent implements OnInit {
     const color = this.newCategoryColor().trim() || this.colorOptions[0].class;
     // Usar un icono fijo para todas las categorías
     const icon = 'label';
-    this.categoryService.addCategory({ name, icon, color });
+    const created = await this.categoryService.addCategory({ name, icon, color });
+    if (!created) {
+      alert('No se pudo crear la categoría.');
+      return;
+    }
     this.newCategoryName.set('');
     this.newCategoryColor.set('');
     this.showNewCategoryModal.set(false);

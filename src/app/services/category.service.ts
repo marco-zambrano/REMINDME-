@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Category } from '../models/category.model';
+import { SupabaseService } from './supabase.service';
 
 const STORAGE_KEY = 'remindme.categories.v1';
 
@@ -13,84 +14,132 @@ function slugify(text: string): string {
     .replace(/(^-|-$)+/g, '');
 }
 
-const DEFAULT_CATEGORIES: Category[] = [
-  { name: 'Personal', slug: 'personal', icon: 'label', color: 'bg-blue-500' },
-  { name: 'Trabajo', slug: 'trabajo', icon: 'label', color: 'bg-purple-500' },
-  { name: 'Compras', slug: 'compras', icon: 'label', color: 'bg-green-500' },
-  { name: 'Salud', slug: 'salud', icon: 'label', color: 'bg-red-500' },
-];
+// Ya no usamos categorías por defecto hardcodeadas; todo viene de la BD
 
 @Injectable({ providedIn: 'root' })
 export class CategoryService {
-  private categoriesSubject = new BehaviorSubject<Category[]>(this.load());
+  constructor(private readonly supabaseService: SupabaseService) {}
+
+  private categoriesSubject = new BehaviorSubject<Category[]>([]);
   categories$ = this.categoriesSubject.asObservable();
 
   getCategories(): Category[] {
     return this.categoriesSubject.value;
   }
 
-  addCategory(input: { name: string; icon?: string; color?: string }): Category {
-    const name = input.name.trim();
-    const slug = slugify(name);
-    const icon = input.icon ?? '';
-    const color = input.color ?? 'bg-gray-500';
-
-    const list = this.categoriesSubject.value;
-    if (list.find((c) => c.slug === slug)) {
-      return list.find((c) => c.slug === slug)!;
+  async refresh(): Promise<void> {
+    const user = this.supabaseService.getCurrentUser();
+    if (!user) {
+      this.categoriesSubject.next([]);
+      return;
     }
 
-    const newCat: Category = { name, slug, icon, color };
-    const updated = [...list, newCat];
-    this.categoriesSubject.next(updated);
-    this.persist(updated);
-    return newCat;
+    const client = this.supabaseService.getClient();
+    const { data, error } = await client
+      .from('categories')
+      .select('id, name, color, created_by')
+      .eq('created_by', user.id)
+      .order('name', { ascending: true });
+
+    if (error) {
+      console.error('Error loading categories:', error);
+      this.categoriesSubject.next([]);
+      return;
+    }
+
+    const mapped: Category[] = (data || []).map((row: any) => ({
+      id: row.id,
+      name: row.name,
+      slug: slugify(row.name),
+      icon: 'label',
+      color: row.color || 'bg-gray-500',
+    }));
+
+    this.categoriesSubject.next(mapped);
   }
 
-  removeCategory(slug: string): void {
-    const updated = this.categoriesSubject.value.filter((c) => c.slug !== slug);
-    this.categoriesSubject.next(updated);
-    this.persist(updated);
+  async addCategory(input: { name: string; icon?: string; color?: string }): Promise<Category | null> {
+    const user = this.supabaseService.getCurrentUser();
+    if (!user) return null;
+
+    const name = input.name.trim();
+    const slug = slugify(name);
+    const icon = input.icon ?? 'label';
+    const color = input.color ?? 'bg-gray-500';
+
+    // Evitar duplicados por slug local
+    const list = this.categoriesSubject.value;
+    const existing = list.find((c) => c.slug === slug);
+    if (existing) return existing;
+
+    const client = this.supabaseService.getClient();
+    const { data, error } = await client
+      .from('categories')
+      .insert({ name, color, created_by: user.id })
+      .select('id, name, color')
+      .single();
+
+    if (error) {
+      console.error('Error inserting category:', error);
+      return null;
+    }
+
+    const created: Category = {
+      id: data.id,
+      name: data.name,
+      slug,
+      icon,
+      color: data.color || color,
+    };
+    this.categoriesSubject.next([...list, created]);
+    return created;
   }
 
-  updateCategory(partial: Partial<Category> & { slug: string }): void {
+  async removeCategory(slug: string): Promise<void> {
+    const list = this.categoriesSubject.value;
+    const target = list.find((c) => c.slug === slug);
+    if (!target?.id) {
+      this.categoriesSubject.next(list.filter((c) => c.slug !== slug));
+      return;
+    }
+    const client = this.supabaseService.getClient();
+    const { error } = await client.from('categories').delete().eq('id', target.id);
+    if (error) {
+      console.error('Error deleting category:', error);
+      return;
+    }
+    this.categoriesSubject.next(list.filter((c) => c.slug !== slug));
+  }
+
+  async updateCategory(partial: Partial<Category> & { slug: string }): Promise<void> {
     const list = this.categoriesSubject.value;
     const idx = list.findIndex((c) => c.slug === partial.slug);
     if (idx === -1) return;
-    const updated = [...list];
-    updated[idx] = { ...updated[idx], ...partial } as Category;
-    this.categoriesSubject.next(updated);
-    this.persist(updated);
-  }
 
-  private load(): Category[] {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return DEFAULT_CATEGORIES;
-      const parsed = JSON.parse(raw) as Category[];
-      if (!Array.isArray(parsed) || parsed.length === 0) return DEFAULT_CATEGORIES;
+    const current = list[idx];
+    const next: Category = { ...current, ...partial } as Category;
 
-      // Migration: ensure icon and color for all categories
-      let changed = false;
-      const migrated = parsed.map((c) => {
-        const icon = c.icon && c.icon.trim() ? c.icon : 'label';
-        const color = c.color && c.color.trim() ? c.color : 'bg-gray-500';
-        if (icon !== c.icon || color !== c.color) changed = true;
-        return { ...c, icon, color } as Category;
-      });
-
-      if (changed) {
-        this.persist(migrated);
+    if (current.id) {
+      const client = this.supabaseService.getClient();
+      const payload: any = { name: next.name, color: next.color };
+      const { error } = await client.from('categories').update(payload).eq('id', current.id);
+      if (error) {
+        console.error('Error updating category:', error);
+        return;
       }
-      return migrated;
-    } catch {
-      return DEFAULT_CATEGORIES;
     }
+
+    const updated = [...list];
+    updated[idx] = next;
+    this.categoriesSubject.next(updated);
   }
 
-  private persist(categories: Category[]) {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(categories));
-    } catch {}
+  // Compat: mantener función que antes cargaba localStorage, ahora solo inicia refresco
+  private load(): Category[] {
+    this.refresh();
+    return [];
   }
+
+  // Ya no persistimos en localStorage; la fuente de verdad es Supabase
+  private persist(_categories: Category[]) {}
 }
