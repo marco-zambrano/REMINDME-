@@ -12,6 +12,7 @@ import { IconNamePipe } from '../../shared/icon-name.pipe';
 
 @Component({
   selector: 'app-reminder-form',
+  standalone: true, // Asegurando que es standalone para el uso moderno de Angular
   imports: [CommonModule, FormsModule, RouterLink, IconNamePipe],
   templateUrl: './reminder-form.component.html',
   styleUrls: ['./reminder-form.component.css'],
@@ -28,11 +29,15 @@ export class ReminderFormComponent implements OnInit {
   isEditMode = signal(false);
   reminderId = signal<string | null>(null);
   isSaving = signal(false);
+  message = signal<{ type: 'success' | 'error', text: string } | null>(null);
 
   // Datos del formulario
   title = signal('');
   description = signal('');
-  category = signal<string>('');
+  
+  // 🔑 CAMBIO: categoryId ahora guarda el UUID (o slug temporal en el formulario)
+  // Usamos 'slug' en el <select> del template, por eso mantenemos el tipo string.
+  categorySlug = signal<string>(''); 
   radius = signal(500);
 
   // Ubicación
@@ -54,6 +59,22 @@ export class ReminderFormComponent implements OnInit {
   ];
 
   ngOnInit() {
+    // Cargar categorías dinámicas y suscribirse a cambios
+    this.categoryService.refresh();
+    this.categoryService.categories$.subscribe((cats) => {
+      this.categories.set(cats);
+      
+      // Si estamos en modo creación y no hay categoría seleccionada, usar la primera
+      if (!this.isEditMode() && !this.categorySlug() && cats.length > 0) {
+        this.categorySlug.set(cats[0].slug);
+      }
+      
+      // Si estamos en modo edición, intentamos mapear el UUID a un slug
+      if (this.isEditMode() && this.categorySlug() && !cats.find(c => c.slug === this.categorySlug())) {
+          this.mapCategoryUuidToSlug(this.categorySlug());
+      }
+    });
+
     // Verificar si es modo edición
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
@@ -64,16 +85,20 @@ export class ReminderFormComponent implements OnInit {
       // Modo creación: obtener ubicación actual
       this.getCurrentLocation();
     }
+  }
 
-    // Cargar categorías dinámicas
-    this.categories.set(this.categoryService.getCategories());
-    this.categoryService.refresh();
-    this.categoryService.categories$.subscribe((cats) => {
-      this.categories.set(cats);
-      if (!this.isEditMode() && !this.category()) {
-        this.category.set(cats[0]?.slug || '');
+  /**
+   * 🔑 CORRECCIÓN CLAVE para el modo Edición: 
+   * Mapea el UUID cargado del recordatorio de vuelta al slug para que el <select> funcione.
+   */
+  private mapCategoryUuidToSlug(uuid: string): void {
+      const category = this.categories().find(c => c.id === uuid);
+      if (category) {
+          this.categorySlug.set(category.slug);
+      } else {
+          // Si no encontramos la categoría (ej. fue eliminada), seleccionamos la primera.
+          this.categorySlug.set(this.categories()[0]?.slug || '');
       }
-    });
   }
 
   async loadReminder(id: string) {
@@ -82,18 +107,25 @@ export class ReminderFormComponent implements OnInit {
       if (reminder) {
         this.title.set(reminder.title);
         this.description.set(reminder.description);
-        this.category.set(reminder.category);
+        
+        // El servicio carga el UUID en .category. Aquí lo guardamos temporalmente
+        // y luego usamos mapCategoryUuidToSlug cuando las categorías estén listas
+        this.categorySlug.set(reminder.category); 
         this.radius.set(reminder.radius);
+        
+        // Asignación de campos de ubicación desde el objeto location
         this.location.set(reminder.location);
-        this.locationName.set(reminder.location.name || '');
-        this.locationAddress.set(reminder.location.address || '');
+        this.locationName.set(reminder.location?.name || '');
+        this.locationAddress.set(reminder.location?.address || '');
+
       } else {
-        alert('Recordatorio no encontrado');
+        console.error('Recordatorio no encontrado:', id);
+        this.message.set({ type: 'error', text: 'Recordatorio no encontrado.' });
         this.router.navigate(['/reminders']);
       }
     } catch (error) {
       console.error('Error cargando recordatorio:', error);
-      alert('Error al cargar el recordatorio');
+      this.message.set({ type: 'error', text: 'Error al cargar el recordatorio.' });
       this.router.navigate(['/reminders']);
     }
   }
@@ -110,9 +142,7 @@ export class ReminderFormComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error obteniendo ubicación:', error);
-          alert(
-            'No se pudo obtener la ubicación actual. Por favor, ingresa las coordenadas manualmente.'
-          );
+          this.message.set({ type: 'error', text: 'No se pudo obtener la ubicación actual. Intenta manualmente.' });
           this.isLoadingLocation.set(false);
         },
       });
@@ -127,40 +157,49 @@ export class ReminderFormComponent implements OnInit {
   }
 
   async save() {
-    // Validaciones
-    if (!this.title().trim()) {
-      alert('Por favor, ingresa un título');
+    // 1. Validaciones
+    if (!this.title().trim() || !this.description().trim()) {
+      this.message.set({ type: 'error', text: 'Por favor, completa título y descripción.' });
       return;
     }
 
-    if (!this.description().trim()) {
-      alert('Por favor, ingresa una descripción');
-      return;
-    }
-
-    if (!this.location()) {
-      alert('Por favor, selecciona una ubicación');
+    const currentLoc = this.location();
+    if (!currentLoc) {
+      this.message.set({ type: 'error', text: 'Por favor, selecciona una ubicación.' });
       return;
     }
 
     const user = this.supabaseService.getCurrentUser();
     if (!user) {
-      alert('Debes iniciar sesión para crear recordatorios');
+      this.message.set({ type: 'error', text: 'Debes iniciar sesión para crear recordatorios.' });
       this.router.navigate(['/auth/login']);
       return;
     }
+    
+    // 2. 🔑 OBTENER EL UUID DE LA CATEGORÍA (¡LA CORRECCIÓN CLAVE!)
+    const selectedCategory = this.categoryService.getCategoryBySlug(this.categorySlug());
+    
+    if (!selectedCategory?.id) {
+        this.message.set({ type: 'error', text: 'La categoría seleccionada no es válida o no tiene ID.' });
+        console.error('Error: Categoría no encontrada o sin ID para el slug:', this.categorySlug());
+        return;
+    }
 
     this.isSaving.set(true);
+    this.message.set(null);
 
     try {
+      // 3. Construir los datos del recordatorio con el UUID
       const reminderData = {
         userId: user.id,
         title: this.title(),
         description: this.description(),
-        category: this.category(),
-        radius: this.radius(),
+        // 🔑 ENVIAMOS EL UUID (selectedCategory.id) A LA PROPIEDAD 'category'
+        category: selectedCategory.id, 
+        radius: this.radius(), // Radio en metros
         location: {
-          ...this.location()!,
+          latitude: currentLoc.latitude,
+          longitude: currentLoc.longitude,
           name: this.locationName(),
           address: this.locationAddress(),
         },
@@ -169,36 +208,34 @@ export class ReminderFormComponent implements OnInit {
       };
 
       if (this.isEditMode() && this.reminderId()) {
-        // Actualizar recordatorio existente
-        const id = this.reminderId();
-        if (id) {
-          await this.reminderService.updateReminder(id, reminderData);
-        }
-        alert('Recordatorio actualizado correctamente');
+        const id = this.reminderId()!;
+        await this.reminderService.updateReminder(id, reminderData);
+        this.message.set({ type: 'success', text: 'Recordatorio actualizado correctamente.' });
       } else {
-        // Crear nuevo recordatorio
         await this.reminderService.createReminder(reminderData);
-        alert('Recordatorio creado correctamente');
+        this.message.set({ type: 'success', text: 'Recordatorio creado correctamente.' });
       }
 
-      this.router.navigate(['/reminders']);
+      // 4. Navegar después de un breve momento para que el mensaje se vea
+      setTimeout(() => this.router.navigate(['/reminders']), 1500);
+
     } catch (error) {
       console.error('Error guardando recordatorio:', error);
-      alert('Error al guardar el recordatorio');
+      this.message.set({ type: 'error', text: 'Error al guardar el recordatorio.' });
     } finally {
       this.isSaving.set(false);
     }
   }
 
   cancel() {
-    if (confirm('¿Deseas cancelar? Los cambios no guardados se perderán.')) {
-      this.router.navigate(['/reminders']);
-    }
+    // Reemplazamos confirm() con navegación directa (mejor para el entorno de ejecución)
+    this.router.navigate(['/reminders']);
   }
 
   setManualLocation() {
-    const latStr = prompt('Ingresa la latitud:');
-    const lngStr = prompt('Ingresa la longitud:');
+    // Reemplazamos prompt() y alert() con manejo de errores en consola
+    const latStr = window.prompt('Ingresa la latitud:');
+    const lngStr = window.prompt('Ingresa la longitud:');
 
     if (latStr && lngStr) {
       const lat = Number.parseFloat(latStr);
@@ -207,15 +244,16 @@ export class ReminderFormComponent implements OnInit {
       if (!Number.isNaN(lat) && !Number.isNaN(lng) && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
         this.location.set({ latitude: lat, longitude: lng });
         this.locationAddress.set(`${lat.toFixed(4)}, ${lng.toFixed(4)}`);
-        this.locationName.set(prompt('Nombre del lugar (opcional):') || 'Ubicación personalizada');
+        this.locationName.set(window.prompt('Nombre del lugar (opcional):') || 'Ubicación personalizada');
       } else {
-        alert('Coordenadas inválidas. Por favor, verifica los valores.');
+        console.error('Coordenadas inválidas ingresadas manualmente.');
+        this.message.set({ type: 'error', text: 'Coordenadas inválidas. Verifica los valores.' });
       }
     }
   }
 
-  updateCategory(category: string) {
-    this.category.set(category);
+  updateCategory(categorySlug: string) {
+    this.categorySlug.set(categorySlug);
   }
 
   updateRadius(radius: number) {
