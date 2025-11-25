@@ -43,6 +43,7 @@ export class ReminderListComponent implements OnInit {
   selectedFilter = signal<'all' | 'active' | 'completed'>('active');
   selectedCategory = signal<string | 'all'>('all');
   isMonitoring = signal(false);
+  isRefreshing = signal(false);
   currentLocation = signal<{ latitude: number; longitude: number } | null>(null);
   categories = signal<Category[]>([]);
   // Inputs para crear categoría
@@ -284,9 +285,14 @@ export class ReminderListComponent implements OnInit {
   }
 
   async refresh() {
-    await this.reminderService.refresh();
-    await this.loadStats();
-    this.getCurrentLocation();
+    this.isRefreshing.set(true);
+    try {
+      await this.reminderService.refresh();
+      await this.loadStats();
+      this.getCurrentLocation();
+    } finally {
+      this.isRefreshing.set(false);
+    }
   }
 
   async logout() {

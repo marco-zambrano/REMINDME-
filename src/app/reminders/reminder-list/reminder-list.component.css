@@ -10,7 +10,7 @@
   }
 }
 
-.bg-white {
+.card-animate {
   animation: slideIn 0.3s ease-out;
 }
 
@@ -23,13 +23,224 @@
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
-/* Estilos responsive */
-@media (max-width: 640px) {
-  .grid {
-    grid-template-columns: 1fr;
-  }
+/* Spinner para botón de actualizar */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
 
-  .flex-wrap {
-    flex-direction: column;
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* === RESPONSIVE STYLES === */
+
+/* Tablets y pantallas medianas (768px - 1023px) */
+@media (max-width: 1023px) {
+  .card-animate {
+    animation-duration: 0.4s;
+  }
+  
+  .hover\:shadow-md:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  }
+}
+
+/* Móviles y pantallas pequeñas (hasta 767px) */
+@media (max-width: 767px) {
+  /* Animaciones más suaves en móvil */
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(15px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .card-animate {
+    animation-duration: 0.5s;
+  }
+  
+  /* Reducir efectos hover en móvil (opcional, ya que touch no tiene hover real) */
+  .hover\:shadow-md:hover {
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.06);
+  }
+  
+  /* Alternativa: deshabilitar hover en dispositivos táctiles */
+  @media (hover: none) {
+    .hover\:shadow-md:hover {
+      box-shadow: inherit;
+    }
+  }
+}
+
+/* Pantallas muy pequeñas (hasta 480px) */
+@media (max-width: 480px) {
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .card-animate {
+    animation-duration: 0.6s;
+  }
+}
+
+/* Preferencias de movimiento reducido (accesibilidad) */
+@media (prefers-reduced-motion: reduce) {
+  .card-animate,
+  .shadow,
+  .animate-spin {
+    animation: none;
+    transition: none;
+  }
+  
+  @keyframes slideIn {
+    from, to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  
+  @keyframes spin {
+    to { transform: none; }
+  }
+}
+
+/* === RESPONSIVE STYLES === */
+
+/* Header responsivo */
+@media (max-width: 768px) {
+
+  header .flex.gap-3 {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    width: 100%;
+  }
+  
+  header button {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  h1 {
+    font-size: 1.5rem !important;
+  }
+  
+  .grid-cols-1.md\:grid-cols-4 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  
+  .flex.flex-wrap.gap-4 {
+    flex-direction: column !important;
+  }
+  
+  .flex.gap-2 {
+    flex-wrap: wrap;
+  }
+  
+  fieldset button {
+    font-size: 0.75rem !important;
+    padding: 0.5rem 0.75rem !important;
+  }
+  
+  .bg-white.rounded-lg.shadow .flex.items-start {
+    flex-direction: column !important;
+  }
+  
+  .bg-white.rounded-lg.shadow .flex.items-center.gap-2.ml-4 {
+    margin-left: 0 !important;
+    margin-top: 1rem;
+    width: 100%;
+    justify-content: center;
+  }
+  
+  footer .flex.flex-col.sm\:flex-row {
+    text-align: center;
+  }
+  
+  footer .flex.items-center.gap-4 {
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .grid-cols-1.md\:grid-cols-4 {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .px-4 {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+  
+  .material-symbols-rounded {
+    font-size: 1.25rem !important;
+  }
+}
+
+@media (max-width: 1023px) {
+  .card-animate {
+    animation-duration: 0.4s;
+  }
+  
+  .hover\:shadow-md:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  }
+}
+
+@media (max-width: 767px) {
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(15px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .card-animate {
+    animation-duration: 0.5s;
+  }
+  
+  /* Reducir efectos hover en móvil */
+  .hover\:shadow-md:hover {
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.06);
+  }
+  
+  /* Deshabilitar hover en dispositivos táctiles */
+  @media (hover: none) {
+    .hover\:shadow-md:hover {
+      box-shadow: inherit;
+    }
+  }
+}
+
+/* Pantallas muy pequeñas (hasta 480px) */
+@media (max-width: 480px) {
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .card-animate {
+    animation-duration: 0.6s;
   }
 }
