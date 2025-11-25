@@ -28,20 +28,23 @@ COPY --from=builder /app/dist/remindme/browser /usr/share/nginx/html
 # Exponer el puerto 8080 (requerido por Cloud Run)
 EXPOSE 8080
 
-# Crear directorio assets y script de inicio
-RUN mkdir -p /usr/share/nginx/html/assets /docker-entrypoint.d
+# Crear directorio assets
+RUN mkdir -p /usr/share/nginx/html/assets
 
 # Crear script de inicio para inyectar variables de entorno
-RUN echo '#!/bin/sh' > /docker-entrypoint.d/40-inject-env.sh && \
-    echo 'set -e' >> /docker-entrypoint.d/40-inject-env.sh && \
-    echo 'cat > /usr/share/nginx/html/assets/env.js <<ENVJS' >> /docker-entrypoint.d/40-inject-env.sh && \
-    echo 'window.ENV = {' >> /docker-entrypoint.d/40-inject-env.sh && \
-    echo '  SUPABASE_URL: '"'"'${SUPABASE_URL}'"'"',' >> /docker-entrypoint.d/40-inject-env.sh && \
-    echo '  SUPABASE_KEY: '"'"'${SUPABASE_KEY}'"'"'' >> /docker-entrypoint.d/40-inject-env.sh && \
-    echo '};' >> /docker-entrypoint.d/40-inject-env.sh && \
-    echo 'ENVJS' >> /docker-entrypoint.d/40-inject-env.sh && \
-    echo 'echo "Variables de entorno inyectadas correctamente"' >> /docker-entrypoint.d/40-inject-env.sh && \
-    chmod +x /docker-entrypoint.d/40-inject-env.sh
+COPY <<'EOF' /docker-entrypoint.d/40-inject-env.sh
+#!/bin/sh
+set -e
+cat > /usr/share/nginx/html/assets/env.js <<ENVJS
+window.ENV = {
+  SUPABASE_URL: "${SUPABASE_URL}",
+  SUPABASE_KEY: "${SUPABASE_KEY}"
+};
+ENVJS
+echo "Variables de entorno inyectadas correctamente"
+EOF
+
+RUN chmod +x /docker-entrypoint.d/40-inject-env.sh
 
 # Iniciar nginx
 CMD ["nginx", "-g", "daemon off;"]
