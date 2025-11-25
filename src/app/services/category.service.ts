@@ -142,4 +142,15 @@ export class CategoryService {
 
   // Ya no persistimos en localStorage; la fuente de verdad es Supabase
   private persist(_categories: Category[]) {}
+
+  /**
+   * Busca y devuelve una categoría por su slug (ej: 'trabajo').
+   * Es crucial para que el ReminderForm pueda obtener el UUID antes de guardar un recordatorio.
+   * @param slug El slug de la categoría.
+   * @returns La categoría completa o undefined si no se encuentra.
+   */
+  getCategoryBySlug(slug: string): Category | undefined {
+    return this.categoriesSubject.value.find((c) => c.slug === slug);
+  }
+
 }

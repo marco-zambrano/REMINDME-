@@ -69,19 +69,21 @@ export class ReminderListComponent implements OnInit {
       this.currentUser.set(user);
     });
 
+    // Cargar categorías dinámicas
+    this.categories.set(this.categoryService.getCategories());
+    this.categoryService.refresh();
+    this.categoryService.categories$.subscribe((cats) => {
+      this.categories.set(cats);
+      // Cuando se cargan las categorías, recargar recordatorios para asegurar mapeo correcto
+      this.filterReminders();
+    });
+
     // Suscribirse a cambios en los recordatorios
     this.reminderService.reminders$.subscribe((reminders) => {
       console.log('🔄 Recordatorios actualizados:', reminders.length);
       this.reminders.set(reminders);
       this.filterReminders();
       this.loadStats(); // Actualizar estadísticas automáticamente
-    });
-
-    // Cargar categorías dinámicas
-    this.categories.set(this.categoryService.getCategories());
-    this.categoryService.refresh();
-    this.categoryService.categories$.subscribe((cats) => {
-      this.categories.set(cats);
     });
   }
 
@@ -119,13 +121,18 @@ export class ReminderListComponent implements OnInit {
 
   filterReminders() {
     const filter = this.selectedFilter();
-    const category = this.selectedCategory();
+    const categorySlug = this.selectedCategory();
 
     let filtered = this.reminders();
 
     // Filtrar por categoría primero
-    if (category !== 'all') {
-      filtered = filtered.filter((r: Reminder) => r.category === category);
+    if (categorySlug !== 'all') {
+      // Buscar la categoría por slug para obtener su ID
+      const selectedCategoryObj = this.categories().find((c) => c.slug === categorySlug);
+      if (selectedCategoryObj) {
+        // Filtrar por el ID (UUID) de la categoría
+        filtered = filtered.filter((r: Reminder) => r.category === selectedCategoryObj.id);
+      }
     }
 
     // Separar en activos y completados
@@ -218,13 +225,33 @@ export class ReminderListComponent implements OnInit {
   }
 
   getCategoryIcon(category: string): string {
-    const c = this.categories().find((x) => x.slug === category);
+    // Buscar por ID (UUID) primero
+    let c = this.categories().find((x) => x.id === category);
+    // Si no encontramos por ID, buscar por slug (compatibilidad)
+    if (!c) {
+      c = this.categories().find((x) => x.slug === category);
+    }
     return c?.icon || 'label';
   }
 
   getCategoryColor(category: string): string {
-    const c = this.categories().find((x) => x.slug === category);
+    // Buscar por ID (UUID) primero
+    let c = this.categories().find((x) => x.id === category);
+    // Si no encontramos por ID, buscar por slug (compatibilidad)
+    if (!c) {
+      c = this.categories().find((x) => x.slug === category);
+    }
     return c?.color || 'bg-gray-500';
+  }
+
+  getCategoryName(category: string): string {
+    // Buscar por ID (UUID) primero
+    let c = this.categories().find((x) => x.id === category);
+    // Si no encontramos por ID, buscar por slug (compatibilidad)
+    if (!c) {
+      c = this.categories().find((x) => x.slug === category);
+    }
+    return c?.name || category;
   }
 
   async addCategory() {
