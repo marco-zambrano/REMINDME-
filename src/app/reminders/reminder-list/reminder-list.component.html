@@ -13,7 +13,7 @@
           <p class="text-xs text-gray-500 mt-1"><span class="material-symbols-rounded text-sm align-middle mr-1">person</span>{{ currentUser()!.email }}</p>
           }
         </div>
-        <div class="md:flex md:items-center md:gap-3 md:flex-row flex-col items-start gap-2">
+        <div class="flex items-center gap-3">
           @if (canInstallPwa()) {
           <button
             (click)="installPwa()"
@@ -33,12 +33,12 @@
             <span class="material-symbols-rounded align-middle mr-1">{{ isMonitoring() ? 'check' : 'radio_button_unchecked' }}</span>
             {{ isMonitoring() ? 'Monitoreando' : 'Iniciar Monitoreo' }}
           </button>
-          <button
+          <a
             routerLink="/reminders/new"
             class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
           >
             + Nuevo Recordatorio
-          </button>
+          </a>
           <button
             (click)="logout()"
             class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
@@ -256,9 +256,16 @@
         <div class="ml-auto flex items-end">
           <button
             (click)="refresh()"
-            class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+            [disabled]="isRefreshing()"
+            class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
           >
-            <span class="material-symbols-rounded align-middle mr-1">refresh</span> Actualizar
+            <span 
+              class="material-symbols-rounded align-middle" 
+              [class.animate-spin]="isRefreshing()"
+            >
+              refresh
+            </span> 
+            <span>{{ isRefreshing() ? 'Actualizando...' : 'Actualizar' }}</span>
           </button>
         </div>
       </div>
