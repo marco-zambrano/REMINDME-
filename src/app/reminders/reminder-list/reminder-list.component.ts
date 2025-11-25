@@ -47,9 +47,15 @@ export class ReminderListComponent implements OnInit {
   categories = signal<Category[]>([]);
   // Inputs para crear categoría
   newCategoryName = signal('');
-  newCategoryIcon = signal('');
   newCategoryColor = signal('');
   showNewCategoryModal = signal(false);
+  colorOptions = [
+    { class: 'bg-blue-600', name: 'Azul' },
+    { class: 'bg-purple-600', name: 'Morado' },
+    { class: 'bg-green-600', name: 'Verde' },
+    { class: 'bg-red-600', name: 'Rojo' },
+    { class: 'bg-orange-600', name: 'Naranja' },
+  ];
 
 
   ngOnInit() {
@@ -80,8 +86,7 @@ export class ReminderListComponent implements OnInit {
 
   openNewCategoryModal() {
     this.newCategoryName.set('');
-    this.newCategoryIcon.set('');
-    this.newCategoryColor.set('');
+    this.newCategoryColor.set(this.colorOptions[0].class);
     this.showNewCategoryModal.set(true);
   }
 
@@ -213,7 +218,7 @@ export class ReminderListComponent implements OnInit {
 
   getCategoryIcon(category: string): string {
     const c = this.categories().find((x) => x.slug === category);
-    return c?.icon || '📌';
+    return c?.icon || 'label';
   }
 
   getCategoryColor(category: string): string {
@@ -227,11 +232,11 @@ export class ReminderListComponent implements OnInit {
       alert('Ingresa un nombre para la categoría');
       return;
     }
-    const icon = this.newCategoryIcon().trim() || '📌';
-    const color = this.newCategoryColor().trim() || 'bg-gray-500';
+    const color = this.newCategoryColor().trim() || this.colorOptions[0].class;
+    // Usar un icono fijo para todas las categorías
+    const icon = 'label';
     this.categoryService.addCategory({ name, icon, color });
     this.newCategoryName.set('');
-    this.newCategoryIcon.set('');
     this.newCategoryColor.set('');
     this.showNewCategoryModal.set(false);
   }

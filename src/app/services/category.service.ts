@@ -14,10 +14,10 @@ function slugify(text: string): string {
 }
 
 const DEFAULT_CATEGORIES: Category[] = [
-  { name: 'Personal', slug: 'personal', icon: '', color: 'bg-blue-500' },
-  { name: 'Trabajo', slug: 'trabajo', icon: '', color: 'bg-purple-500' },
-  { name: 'Compras', slug: 'compras', icon: '', color: 'bg-green-500' },
-  { name: 'Salud', slug: 'salud', icon: '', color: 'bg-red-500' },
+  { name: 'Personal', slug: 'personal', icon: 'label', color: 'bg-blue-500' },
+  { name: 'Trabajo', slug: 'trabajo', icon: 'label', color: 'bg-purple-500' },
+  { name: 'Compras', slug: 'compras', icon: 'label', color: 'bg-green-500' },
+  { name: 'Salud', slug: 'salud', icon: 'label', color: 'bg-red-500' },
 ];
 
 @Injectable({ providedIn: 'root' })
@@ -69,7 +69,20 @@ export class CategoryService {
       if (!raw) return DEFAULT_CATEGORIES;
       const parsed = JSON.parse(raw) as Category[];
       if (!Array.isArray(parsed) || parsed.length === 0) return DEFAULT_CATEGORIES;
-      return parsed;
+
+      // Migration: ensure icon and color for all categories
+      let changed = false;
+      const migrated = parsed.map((c) => {
+        const icon = c.icon && c.icon.trim() ? c.icon : 'label';
+        const color = c.color && c.color.trim() ? c.color : 'bg-gray-500';
+        if (icon !== c.icon || color !== c.color) changed = true;
+        return { ...c, icon, color } as Category;
+      });
+
+      if (changed) {
+        this.persist(migrated);
+      }
+      return migrated;
     } catch {
       return DEFAULT_CATEGORIES;
     }
