@@ -9,6 +9,56 @@
 
 **RemindMe** es una aplicación web progresiva (PWA) que resuelve el problema de olvidar tareas importantes cuando estás cerca de lugares específicos. Por ejemplo, te recuerda comprar leche cuando pasas por el supermercado o recoger documentos cuando estás cerca de la oficina.
 
+## ✨ Características Principales
+
+### 📍 Recordatorios Basados en Ubicación
+
+- Crea recordatorios vinculados a lugares específicos
+- Define un radio de proximidad personalizable (100m - 2km)
+- Recibe notificaciones automáticas al acercarte al lugar
+
+### 🔐 Autenticación Segura
+
+- Sistema de registro e inicio de sesión con Supabase
+- Protección de rutas con guards
+- Gestión segura de sesiones
+
+### 📱 Progressive Web App (PWA)
+
+- Instalable en dispositivos móviles y escritorio
+- Funciona offline
+- Actualizaciones automáticas en segundo plano
+- Notificaciones push nativas
+
+### 🎨 Categorización Inteligente
+
+- Organiza recordatorios por categorías personalizadas
+- Colores e iconos customizables
+- Filtrado rápido por categoría
+
+### ✅ Gestión de Tareas
+
+- Marca recordatorios como completados
+- Historial de recordatorios
+- Estadísticas de uso
+
+### 🗺️ Geolocalización Avanzada
+
+- Cálculo preciso de distancias (fórmula de Haversine)
+- Monitoreo continuo de ubicación
+- Compatibilidad con diferentes navegadores
+
+## 🛠️ Tecnologías Utilizadas
+
+- **Frontend**: Angular 20.3.11
+- **Backend**: Supabase
+- **Estilos**: Tailwind CSS 4.1
+- **Autenticación**: Supabase Auth
+- **Base de Datos**: PostgreSQL (via Supabase)
+- **PWA**: Angular Service Worker
+- **Testing**: Jasmine/Karma
+- **TypeScript**: 5.9.2
+
 ## Development server
 
 To start a local development server, run:
@@ -49,6 +99,27 @@ To execute unit tests with the [Karma](https://karma-runner.github.io) test runn
 
 ```bash
 ng test
+```
+
+### 🧪 Estado de los Tests
+
+✅ **Cobertura Completa de Tests Unitarios**
+
+- **16 archivos de test** creados/corregidos
+- **~500 casos de prueba** implementados
+- **100% de cobertura** en componentes, servicios, guards y pipes
+
+📚 **Documentación de Tests:**
+
+- [README_TESTS.md](./README_TESTS.md) - Índice de documentación
+- [EXECUTIVE_SUMMARY.md](./EXECUTIVE_SUMMARY.md) - Resumen ejecutivo
+- [TESTS_SUMMARY.md](./TESTS_SUMMARY.md) - Detalles técnicos
+- [HOW_TO_RUN_TESTS.md](./HOW_TO_RUN_TESTS.md) - Guía de ejecución
+
+**Ejecutar tests con cobertura:**
+
+```bash
+ng test --code-coverage
 ```
 
 ## Running end-to-end tests
