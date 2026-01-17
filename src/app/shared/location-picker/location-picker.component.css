@@ -1,0 +1,37 @@
+/* Estilos personalizados para el selector de ubicación */
+
+/* Asegurar que el contenedor del mapa tenga el tamaño correcto */
+#google-map {
+  min-height: 400px;
+}
+
+/* Estilos para el input de búsqueda de Google Places */
+.pac-container {
+  z-index: 9999 !important;
+  border-radius: 8px;
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  margin-top: 4px;
+}
+
+.pac-item {
+  padding: 10px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.pac-item:hover {
+  background-color: #f3f4f6;
+}
+
+.pac-item-selected {
+  background-color: #e5e7eb;
+}
+
+/* Ajustes para pantallas móviles */
+@media (max-width: 640px) {
+  #google-map {
+    min-height: 300px;
+  }
+}

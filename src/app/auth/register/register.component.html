@@ -51,11 +51,18 @@
               <span class="material-symbols-rounded text-gray-400">lock</span>
             </div>
 
-            <input type="password" formControlName="password"
-              class="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-2
+            <input [type]="showPassword ? 'text' : 'password'" formControlName="password"
+              class="w-full pl-12 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-2
               focus:ring-green-200 outline-none transition-all duration-200 placeholder:text-gray-300 placeholder:text-sm"
               placeholder="Crea una contraseña segura"
               [class.border-red-300]="form.get('password')?.invalid && form.get('password')?.touched" />
+
+            <button type="button"
+              (click)="togglePasswordVisibility()"
+              class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
+              title="{{ showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña' }}">
+              <span class="material-symbols-rounded">{{ showPassword ? 'visibility_off' : 'visibility' }}</span>
+            </button>
           </div>
 
           <p *ngIf="form.get('password')?.invalid && form.get('password')?.touched" class="text-xs text-red-500 mt-1">

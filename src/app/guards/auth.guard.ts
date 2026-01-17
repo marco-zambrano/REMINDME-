@@ -2,11 +2,12 @@ import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { SupabaseService } from '../services/supabase.service';
 
-export const authGuard = () => {
+export const authGuard = async () => {
   const supabaseService = inject(SupabaseService);
   const router = inject(Router);
 
-  const user = supabaseService.getCurrentUser();
+  // Esperar a que se cargue la sesión de Supabase
+  const user = await supabaseService.waitForSessionInitialized();
 
   if (!user) {
     router.navigate(['/login']);

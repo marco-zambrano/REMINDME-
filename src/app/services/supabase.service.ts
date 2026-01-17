@@ -11,6 +11,8 @@ export class SupabaseService {
   private readonly currentUser: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(
     null
   );
+  private sessionInitialized = false;
+  private sessionInitializedPromise: Promise<void>;
 
   constructor() {
     // Usar variables de entorno desde environment
@@ -28,24 +30,36 @@ export class SupabaseService {
       },
     });
 
-    // Verificar sesión existente con manejo de errores
-    this.supabase.auth
-      .getSession()
-      .then(({ data }) => {
-        this.currentUser.next(data.session?.user ?? null);
-      })
-      .catch((error) => {
-        // Silenciar errores de lock en desarrollo (son normales cuando hay múltiples pestañas)
-        if (!error.message?.includes('NavigatorLock')) {
-          console.warn('⚠️ Error al obtener sesión:', error);
-        }
-        this.currentUser.next(null);
-      });
+    // Crear promesa para esperar la inicialización
+    this.sessionInitializedPromise = this.initializeSession();
+
+    // Crear promesa para esperar la inicialización
+    this.sessionInitializedPromise = this.initializeSession();
 
     // Escuchar cambios de autenticación
     this.supabase.auth.onAuthStateChange((event, session) => {
       this.currentUser.next(session?.user ?? null);
     });
+  }
+
+  private async initializeSession(): Promise<void> {
+    try {
+      const { data } = await this.supabase.auth.getSession();
+      this.currentUser.next(data.session?.user ?? null);
+    } catch (error: any) {
+      // Silenciar errores de lock en desarrollo (son normales cuando hay múltiples pestañas)
+      if (!error.message?.includes('NavigatorLock')) {
+        console.warn('⚠️ Error al obtener sesión:', error);
+      }
+      this.currentUser.next(null);
+    } finally {
+      this.sessionInitialized = true;
+    }
+  }
+
+  async waitForSessionInitialized(): Promise<User | null> {
+    await this.sessionInitializedPromise;
+    return this.currentUser.value;
   }
 
   // Observable del usuario actual

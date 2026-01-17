@@ -15,8 +15,13 @@ export class RegisterComponent implements OnInit {
   loading = false;
   error: string | null = null;
   success: string | null = null;
+  showPassword = false;
 
-  constructor(private fb: FormBuilder, private supabase: SupabaseService, private router: Router) {
+  constructor(
+    private readonly fb: FormBuilder,
+    private readonly supabase: SupabaseService,
+    private readonly router: Router,
+  ) {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
@@ -52,5 +57,9 @@ export class RegisterComponent implements OnInit {
     } finally {
       this.loading = false;
     }
+  }
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
   }
 }

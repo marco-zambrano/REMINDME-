@@ -1,17 +1,26 @@
-<div class="min-h-screen bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4">
+<div
+  class="min-h-screen bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4"
+>
   <div class="w-full max-w-md mx-auto">
     <!-- Logo y Título Animado -->
     <div class="text-center mb-8 animate-fade-in">
       <div class="inline-block mb-4 relative">
-        <div class="absolute inset-0 bg-blue-500 rounded-full blur-2xl opacity-20 animate-pulse"></div>
         <div
-          class="relative bg-linear-to-br from-blue-600 to-purple-600 rounded-3xl p-6 sm:p-7 shadow-2xl transform hover:scale-105 transition-transform duration-300">
-          <span class="material-symbols-rounded text-white" style="font-size: 3.5rem;">location_on</span>
+          class="absolute inset-0 bg-blue-500 rounded-full blur-2xl opacity-20 animate-pulse"
+        ></div>
+        <div
+          class="relative bg-linear-to-br from-blue-600 to-purple-600 rounded-3xl p-6 sm:p-7 shadow-2xl transform hover:scale-105 transition-transform duration-300"
+        >
+          <span class="material-symbols-rounded text-white" style="font-size: 3.5rem"
+            >location_on</span
+          >
         </div>
       </div>
 
       <h1 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-2">
-        <span class="bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">RemindMe</span>
+        <span class="bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"
+          >RemindMe</span
+        >
       </h1>
       <p class="text-gray-600 text-xs sm:text-sm">Recordatorios inteligentes con geolocalización</p>
     </div>
@@ -30,17 +39,21 @@
               <span class="material-symbols-rounded text-gray-400">mail</span>
             </div>
 
-            <input class="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 
-              focus:ring-2 focus:ring-blue-200 outline-none transition-all duration-200 placeholder:text-gray-300
-              placeholder:text-sm"
+            <input
+              class="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all duration-200 placeholder:text-gray-300 placeholder:text-sm"
               type="email"
               formControlName="email"
               placeholder="Ingresa tu correo electrónico"
-              [class.border-red-300]="form.get('email')?.invalid && form.get('email')?.touched" />
+              [class.border-red-300]="form.get('email')?.invalid && form.get('email')?.touched"
+            />
           </div>
 
-          <p *ngIf="form.get('email')?.invalid && form.get('email')?.touched"
-            class="text-xs text-red-500 mt-1">Ingresa un email válido</p>
+          <p
+            *ngIf="form.get('email')?.invalid && form.get('email')?.touched"
+            class="text-xs text-red-500 mt-1"
+          >
+            Ingresa un email válido
+          </p>
         </div>
 
         <!-- Password Input -->
@@ -52,47 +65,80 @@
               <span class="material-symbols-rounded text-gray-400">lock</span>
             </div>
 
-            <input class="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 
-              focus:ring-2 focus:ring-blue-200 outline-none transition-all duration-200 placeholder:text-gray-300
-              placeholder:text-sm"
-              type="password"
+            <input
+              class="w-full pl-12 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all duration-200 placeholder:text-gray-300 placeholder:text-sm"
+              [type]="showPassword ? 'text' : 'password'"
               formControlName="password"
               placeholder="Escribe tu contraseña"
-              [class.border-red-300]="form.get('password')?.invalid && form.get('password')?.touched" />
+              [class.border-red-300]="
+                form.get('password')?.invalid && form.get('password')?.touched
+              "
+            />
+
+            <button
+              type="button"
+              (click)="togglePasswordVisibility()"
+              class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
+              title="{{ showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña' }}"
+            >
+              <span class="material-symbols-rounded">{{
+                showPassword ? 'visibility_off' : 'visibility'
+              }}</span>
+            </button>
           </div>
 
-          <p *ngIf="form.get('password')?.invalid && form.get('password')?.touched"
-            class="text-xs text-red-500 mt-1">La contraseña debe tener al menos 6 caracteres</p>
+          <p
+            *ngIf="form.get('password')?.invalid && form.get('password')?.touched"
+            class="text-xs text-red-500 mt-1"
+          >
+            La contraseña debe tener al menos 6 caracteres
+          </p>
         </div>
 
         <!-- Error Message -->
-        <div *ngIf="error" class="bg-red-50 border border-red-200 rounded-xl p-3 flex items-center gap-2">
+        <div
+          *ngIf="error"
+          class="bg-red-50 border border-red-200 rounded-xl p-3 flex items-center gap-2"
+        >
           <span class="material-symbols-rounded text-red-500">warning</span>
           <p class="text-sm text-red-700">{{ error }}</p>
         </div>
 
         <!-- Botón enviar -->
-        <button type="submit" [disabled]="loading || form.invalid"
-          class="w-full bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white
-          font-semibold py-3 px-6 rounded-xl shadow-lg transform transition-all duration-200 hover:scale-[1.02]
-          disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
-
+        <button
+          type="submit"
+          [disabled]="loading || form.invalid"
+          class="w-full bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg transform transition-all duration-200 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+        >
           <span *ngIf="!loading" class="flex items-center justify-center gap-2">
             <span>Iniciar sesión</span>
             <span class="material-symbols-rounded">arrow_forward</span>
           </span>
 
           <span *ngIf="loading" class="flex items-center justify-center gap-2">
-            <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none"
-              viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor"
+            <svg
+              class="animate-spin h-5 w-5"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              ></circle>
+              <path
+                class="opacity-75"
+                fill="currentColor"
                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 
-                1.135 5.824 3 7.938l3-2.647z"></path>
+                1.135 5.824 3 7.938l3-2.647z"
+              ></path>
             </svg>
             <span>Iniciando sesión...</span>
           </span>
-
         </button>
 
         <!-- Divider -->
@@ -106,9 +152,10 @@
         </div>
 
         <!-- Register -->
-        <a routerLink="/register"
-          class="block w-full text-center bg-gray-50 hover:bg-gray-100 text-gray-700 font-semibold py-3 px-6 rounded-xl
-          border-2 border-gray-200 transition-all duration-200 hover:border-gray-300">
+        <a
+          routerLink="/register"
+          class="block w-full text-center bg-gray-50 hover:bg-gray-100 text-gray-700 font-semibold py-3 px-6 rounded-xl border-2 border-gray-200 transition-all duration-200 hover:border-gray-300"
+        >
           <span class="flex items-center justify-center gap-2">
             <span class="material-symbols-rounded">auto_awesome</span>
             <span>Crear cuenta nueva</span>
@@ -127,7 +174,9 @@
 <!-- Footer datos -->
 <footer class="w-full bg-gray-50 border-t border-gray-200 py-6 mt-8">
   <div class="max-w-5xl mx-auto px-4">
-    <div class="flex flex-col sm:flex-row justify-between items-center gap-4 text-xs sm:text-sm text-gray-600">
+    <div
+      class="flex flex-col sm:flex-row justify-between items-center gap-4 text-xs sm:text-sm text-gray-600"
+    >
       <!-- Información -->
       <div class="flex flex-wrap items-center justify-center gap-2">
         <span class="font-semibold text-gray-700">© 2025 RemindMe</span>
@@ -140,10 +189,14 @@
         <span class="text-gray-600">Contacto: +593 98 765 4321</span>
 
         <span class="hidden sm:inline text-gray-400">|</span>
-        <a href="/privacy-policy" class="hover:text-blue-600 transition-colors">Política de Privacidad</a>
+        <a href="/privacy-policy" class="hover:text-blue-600 transition-colors"
+          >Política de Privacidad</a
+        >
 
         <span class="hidden sm:inline text-gray-400">|</span>
-        <a href="/terms-of-service" class="hover:text-blue-600 transition-colors">Términos de Uso</a>
+        <a href="/terms-of-service" class="hover:text-blue-600 transition-colors"
+          >Términos de Uso</a
+        >
       </div>
     </div>
   </div>

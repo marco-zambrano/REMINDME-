@@ -5,15 +5,16 @@ import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { ReminderService } from '../../services/reminder.service';
 import { GeolocationService } from '../../services/geolocation.service';
 import { SupabaseService } from '../../services/supabase.service';
-import { Location } from '../../models';
-import { Category } from '../../models';
+import { Location, Category } from '../../models';
 import { CategoryService } from '../../services/category.service';
 import { IconNamePipe } from '../../shared/icon-name.pipe';
+import { LocationPickerComponent } from '../../shared/location-picker/location-picker.component';
+import { GoogleMapsLocation } from '../../services/google-maps.service';
 
 @Component({
   selector: 'app-reminder-form',
   standalone: true, // Asegurando que es standalone para el uso moderno de Angular
-  imports: [CommonModule, FormsModule, RouterLink, IconNamePipe],
+  imports: [CommonModule, FormsModule, RouterLink, IconNamePipe, LocationPickerComponent],
   templateUrl: './reminder-form.component.html',
   styleUrls: ['./reminder-form.component.css'],
 })
@@ -29,15 +30,15 @@ export class ReminderFormComponent implements OnInit {
   isEditMode = signal(false);
   reminderId = signal<string | null>(null);
   isSaving = signal(false);
-  message = signal<{ type: 'success' | 'error', text: string } | null>(null);
+  message = signal<{ type: 'success' | 'error'; text: string } | null>(null);
 
   // Datos del formulario
   title = signal('');
   description = signal('');
-  
+
   // 🔑 CAMBIO: categoryId ahora guarda el UUID (o slug temporal en el formulario)
   // Usamos 'slug' en el <select> del template, por eso mantenemos el tipo string.
-  categorySlug = signal<string>(''); 
+  categorySlug = signal<string>('');
   radius = signal(500);
 
   // Ubicación
@@ -45,6 +46,7 @@ export class ReminderFormComponent implements OnInit {
   locationName = signal('');
   locationAddress = signal('');
   isLoadingLocation = signal(false);
+  showMapPicker = signal(false);
 
   // Categorías dinámicas
   categories = signal<Category[]>([]);
@@ -63,15 +65,19 @@ export class ReminderFormComponent implements OnInit {
     this.categoryService.refresh();
     this.categoryService.categories$.subscribe((cats) => {
       this.categories.set(cats);
-      
+
       // Si estamos en modo creación y no hay categoría seleccionada, usar la primera
       if (!this.isEditMode() && !this.categorySlug() && cats.length > 0) {
         this.categorySlug.set(cats[0].slug);
       }
-      
+
       // Si estamos en modo edición, intentamos mapear el UUID a un slug
-      if (this.isEditMode() && this.categorySlug() && !cats.find(c => c.slug === this.categorySlug())) {
-          this.mapCategoryUuidToSlug(this.categorySlug());
+      if (
+        this.isEditMode() &&
+        this.categorySlug() &&
+        !cats.some((c) => c.slug === this.categorySlug())
+      ) {
+        this.mapCategoryUuidToSlug(this.categorySlug());
       }
     });
 
@@ -88,17 +94,17 @@ export class ReminderFormComponent implements OnInit {
   }
 
   /**
-   * 🔑 CORRECCIÓN CLAVE para el modo Edición: 
+   * 🔑 CORRECCIÓN CLAVE para el modo Edición:
    * Mapea el UUID cargado del recordatorio de vuelta al slug para que el <select> funcione.
    */
   private mapCategoryUuidToSlug(uuid: string): void {
-      const category = this.categories().find(c => c.id === uuid);
-      if (category) {
-          this.categorySlug.set(category.slug);
-      } else {
-          // Si no encontramos la categoría (ej. fue eliminada), seleccionamos la primera.
-          this.categorySlug.set(this.categories()[0]?.slug || '');
-      }
+    const category = this.categories().find((c) => c.id === uuid);
+    if (category) {
+      this.categorySlug.set(category.slug);
+    } else {
+      // Si no encontramos la categoría (ej. fue eliminada), seleccionamos la primera.
+      this.categorySlug.set(this.categories()[0]?.slug || '');
+    }
   }
 
   async loadReminder(id: string) {
@@ -107,17 +113,16 @@ export class ReminderFormComponent implements OnInit {
       if (reminder) {
         this.title.set(reminder.title);
         this.description.set(reminder.description);
-        
+
         // El servicio carga el UUID en .category. Aquí lo guardamos temporalmente
         // y luego usamos mapCategoryUuidToSlug cuando las categorías estén listas
-        this.categorySlug.set(reminder.category); 
+        this.categorySlug.set(reminder.category);
         this.radius.set(reminder.radius);
-        
+
         // Asignación de campos de ubicación desde el objeto location
         this.location.set(reminder.location);
         this.locationName.set(reminder.location?.name || '');
         this.locationAddress.set(reminder.location?.address || '');
-
       } else {
         console.error('Recordatorio no encontrado:', id);
         this.message.set({ type: 'error', text: 'Recordatorio no encontrado.' });
@@ -142,7 +147,10 @@ export class ReminderFormComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error obteniendo ubicación:', error);
-          this.message.set({ type: 'error', text: 'No se pudo obtener la ubicación actual. Intenta manualmente.' });
+          this.message.set({
+            type: 'error',
+            text: 'No se pudo obtener la ubicación actual. Intenta manualmente.',
+          });
           this.isLoadingLocation.set(false);
         },
       });
@@ -175,14 +183,17 @@ export class ReminderFormComponent implements OnInit {
       this.router.navigate(['/auth/login']);
       return;
     }
-    
+
     // 2. 🔑 OBTENER EL UUID DE LA CATEGORÍA (¡LA CORRECCIÓN CLAVE!)
     const selectedCategory = this.categoryService.getCategoryBySlug(this.categorySlug());
-    
+
     if (!selectedCategory?.id) {
-        this.message.set({ type: 'error', text: 'La categoría seleccionada no es válida o no tiene ID.' });
-        console.error('Error: Categoría no encontrada o sin ID para el slug:', this.categorySlug());
-        return;
+      this.message.set({
+        type: 'error',
+        text: 'La categoría seleccionada no es válida o no tiene ID.',
+      });
+      console.error('Error: Categoría no encontrada o sin ID para el slug:', this.categorySlug());
+      return;
     }
 
     this.isSaving.set(true);
@@ -195,7 +206,7 @@ export class ReminderFormComponent implements OnInit {
         title: this.title(),
         description: this.description(),
         // 🔑 ENVIAMOS EL UUID (selectedCategory.id) A LA PROPIEDAD 'category'
-        category: selectedCategory.id, 
+        category: selectedCategory.id,
         radius: this.radius(), // Radio en metros
         location: {
           latitude: currentLoc.latitude,
@@ -218,7 +229,6 @@ export class ReminderFormComponent implements OnInit {
 
       // 4. Navegar después de un breve momento para que el mensaje se vea
       setTimeout(() => this.router.navigate(['/reminders']), 1500);
-
     } catch (error) {
       console.error('Error guardando recordatorio:', error);
       this.message.set({ type: 'error', text: 'Error al guardar el recordatorio.' });
@@ -234,22 +244,51 @@ export class ReminderFormComponent implements OnInit {
 
   setManualLocation() {
     // Reemplazamos prompt() y alert() con manejo de errores en consola
-    const latStr = window.prompt('Ingresa la latitud:');
-    const lngStr = window.prompt('Ingresa la longitud:');
+    const latStr = globalThis.prompt('Ingresa la latitud:');
+    const lngStr = globalThis.prompt('Ingresa la longitud:');
 
     if (latStr && lngStr) {
       const lat = Number.parseFloat(latStr);
       const lng = Number.parseFloat(lngStr);
 
-      if (!Number.isNaN(lat) && !Number.isNaN(lng) && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
+      if (
+        !Number.isNaN(lat) &&
+        !Number.isNaN(lng) &&
+        lat >= -90 &&
+        lat <= 90 &&
+        lng >= -180 &&
+        lng <= 180
+      ) {
         this.location.set({ latitude: lat, longitude: lng });
         this.locationAddress.set(`${lat.toFixed(4)}, ${lng.toFixed(4)}`);
-        this.locationName.set(window.prompt('Nombre del lugar (opcional):') || 'Ubicación personalizada');
+        this.locationName.set(
+          globalThis.prompt('Nombre del lugar (opcional):') || 'Ubicación personalizada',
+        );
       } else {
         console.error('Coordenadas inválidas ingresadas manualmente.');
         this.message.set({ type: 'error', text: 'Coordenadas inválidas. Verifica los valores.' });
       }
     }
+  }
+
+  openMapPicker() {
+    this.showMapPicker.set(true);
+  }
+
+  closeMapPicker() {
+    this.showMapPicker.set(false);
+  }
+
+  onLocationSelected(location: GoogleMapsLocation) {
+    this.location.set({
+      latitude: location.latitude,
+      longitude: location.longitude,
+    });
+    this.locationName.set(location.name || 'Ubicación seleccionada');
+    this.locationAddress.set(
+      location.address || `${location.latitude.toFixed(6)}, ${location.longitude.toFixed(6)}`,
+    );
+    this.showMapPicker.set(false);
   }
 
   updateCategory(categorySlug: string) {
