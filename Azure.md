@@ -28,9 +28,8 @@ La configuración del flujo de trabajo fue generada automáticamente desde el **
 
 ## 🌐 Acceso a la aplicación
 
-La aplicación se encuentra disponible en la siguiente URL: la url aqui
-
-
+La aplicación se encuentra disponible en la siguiente URL: 
+remindme-dubxaedzd8aff3cf.canadacentral-01.azurewebsites.net
 
 
 > Nota: Al utilizar el plan Free (F1), la aplicación está sujeta a cuotas diarias de uso, propias del nivel gratuito de Azure.
