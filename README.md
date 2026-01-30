@@ -59,6 +59,38 @@
 - **Testing**: Jasmine/Karma
 - **TypeScript**: 5.9.2
 
+## ⚙️ Configuración de Variables de Entorno
+
+El proyecto utiliza un sistema robusto de variables de entorno que funciona tanto en desarrollo como en producción.
+
+### Variables Requeridas
+
+- `SUPABASE_URL` - URL de tu proyecto Supabase
+- `SUPABASE_KEY` - Clave anónima de Supabase
+- `GOOGLE_MAPS_API_KEY` - API Key de Google Maps
+
+### Desarrollo Local
+
+En desarrollo, las variables están pre-configuradas en [src/environments/environment.ts](src/environments/environment.ts). Solo ejecuta:
+
+```bash
+npm start
+```
+
+### Producción (Docker/Cloud)
+
+En producción, las variables se inyectan dinámicamente:
+
+```bash
+docker run -p 8080:8080 \
+  -e SUPABASE_URL="https://tu-proyecto.supabase.co" \
+  -e SUPABASE_KEY="tu-clave-aqui" \
+  -e GOOGLE_MAPS_API_KEY="tu-api-key-aqui" \
+  remindme-app
+```
+
+📚 **Documentación completa:** Ver [ENVIRONMENT_VARIABLES.md](./ENVIRONMENT_VARIABLES.md) para detalles sobre configuración, deployment y mejores prácticas.
+
 ## Development server
 
 To start a local development server, run:
