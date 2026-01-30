@@ -51,7 +51,6 @@ export const environment = {
 };
 `
 
-<<<<<<< HEAD
 - Marca recordatorios como completados
 - Historial de recordatorios
 - Estadísticas de uso
@@ -81,8 +80,6 @@ El proyecto incluye documentación completa de todas las APIs utilizadas:
 - **Supabase Auth API** - Autenticación y gestión de usuarios
 - **Google Maps API** - Geocodificación y búsqueda de lugares
 
-📚 **Documentación completa:** Ver [API_DOCUMENTATION.md](./API_DOCUMENTATION.md)
-
 🔧 **Colección Postman:** Se ha creado una colección completa en Postman con:
 - ✅ 18 endpoints pre-configurados
 - ✅ Variables de entorno automáticas
@@ -104,10 +101,6 @@ El proyecto utiliza un sistema robusto de variables de entorno que funciona tant
 En desarrollo, las variables están pre-configuradas en [src/environments/environment.ts](src/environments/environment.ts). Solo ejecuta:
 
 ```bash
-=======
-4. **Inicia el servidor de desarrollo**
-`ash
->>>>>>> 1fad9076d33471ec60dcb082eb0caffbabc77c0f
 npm start
 `
 
