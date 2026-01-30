@@ -25,6 +25,10 @@ export interface Reminder {
   createdAt: Date;
   updatedAt: Date;
   notified?: boolean;
+  // Campos para activación temporal
+  scheduledTime?: Date; // Fecha/hora para activar automáticamente
+  isTimeActivated?: boolean; // Si ya fue activado por tiempo
+  activationType?: 'location' | 'time' | 'both'; // Tipo de activación
 }
 
 export interface ReminderFilter {

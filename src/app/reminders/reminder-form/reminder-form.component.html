@@ -211,45 +211,123 @@
         }
       </div>
 
-      <!-- Radio de notificación -->
+      <!-- Tipo de Activación -->
       <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 sm:p-6">
-        <label for="radius" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3 sm:mb-4">
-          Radio de notificación: <span class="text-blue-600 font-semibold">{{ radius() }}m</span>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3 sm:mb-4">
+          Tipo de Activación <span class="text-red-500">*</span>
         </label>
-
-        <div class="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-6 gap-2 mb-4">
-          @for (opt of radiusOptions; track opt.value) {
-            <button
-              type="button"
-              (click)="updateRadius(opt.value)"
-              [class]="
-                radius() === opt.value
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-              "
-              class="px-2 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors min-h-[44px]"
-            >
-              {{ opt.label }}
-            </button>
-          }
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <button
+            type="button"
+            (click)="updateActivationType('location')"
+            [class]="
+              activationType() === 'location'
+                ? 'bg-blue-600 text-white border-blue-600'
+                : 'bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-600 hover:border-blue-400'
+            "
+            class="flex flex-col items-center gap-2 p-4 border-2 rounded-lg transition-all cursor-pointer min-h-[100px] justify-center"
+          >
+            <span class="material-symbols-rounded text-3xl">location_on</span>
+            <span class="text-sm font-medium">Por Ubicación</span>
+            <span class="text-xs opacity-80 text-center">Al acercarte al lugar</span>
+          </button>
+          <button
+            type="button"
+            (click)="updateActivationType('time')"
+            [class]="
+              activationType() === 'time'
+                ? 'bg-purple-600 text-white border-purple-600'
+                : 'bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-600 hover:border-purple-400'
+            "
+            class="flex flex-col items-center gap-2 p-4 border-2 rounded-lg transition-all cursor-pointer min-h-[100px] justify-center"
+          >
+            <span class="material-symbols-rounded text-3xl">schedule</span>
+            <span class="text-sm font-medium">Por Fecha/Hora</span>
+            <span class="text-xs opacity-80 text-center">En momento específico</span>
+          </button>
+          <button
+            type="button"
+            (click)="updateActivationType('both')"
+            [class]="
+              activationType() === 'both'
+                ? 'bg-green-600 text-white border-green-600'
+                : 'bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-600 hover:border-green-400'
+            "
+            class="flex flex-col items-center gap-2 p-4 border-2 rounded-lg transition-all cursor-pointer min-h-[100px] justify-center"
+          >
+            <span class="material-symbols-rounded text-3xl">hub</span>
+            <span class="text-sm font-medium">Ambos</span>
+            <span class="text-xs opacity-80 text-center">Ubicación + Tiempo</span>
+          </button>
         </div>
-
-        <input
-          type="range"
-          id="radius"
-          [ngModel]="radius()"
-          name="radius"
-          (ngModelChange)="radius.set($event)"
-          min="50"
-          max="5000"
-          step="50"
-          class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-        />
-
-        <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
-          {{ 'form.radiusHelp' | translate:{ value: radius() } }}
-        </p>
       </div>
+
+      <!-- Fecha y Hora Programada (solo si activationType es 'time' o 'both') -->
+      @if (activationType() === 'time' || activationType() === 'both') {
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 sm:p-6">
+          <label for="scheduledTime" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+            Fecha y Hora de Activación <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="datetime-local"
+            id="scheduledTime"
+            [ngModel]="scheduledTime()"
+            name="scheduledTime"
+            (ngModelChange)="scheduledTime.set($event)"
+            [min]="getMinDateTime()"
+            class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+          />
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
+            @if (scheduledTime()) {
+              Se activará el {{ formatScheduledTime() }}
+            } @else {
+              Selecciona cuándo quieres que se active este recordatorio
+            }
+          </p>
+        </div>
+      }
+
+      <!-- Radio de notificación (solo si activationType es 'location' o 'both') -->
+      @if (activationType() === 'location' || activationType() === 'both') {
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 sm:p-6">
+          <label for="radius" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3 sm:mb-4">
+            Radio de notificación: <span class="text-blue-600 font-semibold">{{ radius() }}m</span>
+          </label>
+
+          <div class="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-6 gap-2 mb-4">
+            @for (opt of radiusOptions; track opt.value) {
+              <button
+                type="button"
+                (click)="updateRadius(opt.value)"
+                [class]="
+                  radius() === opt.value
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                "
+                class="px-2 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors min-h-[44px]"
+              >
+                {{ opt.label }}
+              </button>
+            }
+          </div>
+
+          <input
+            type="range"
+            id="radius"
+            [ngModel]="radius()"
+            name="radius"
+            (ngModelChange)="radius.set($event)"
+            min="50"
+            max="5000"
+            step="50"
+            class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+          />
+
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
+            {{ 'form.radiusHelp' | translate:{ value: radius() } }}
+          </p>
+        </div>
+      }
 
       <!-- Actions -->
       <div class="flex flex-col xs:flex-row gap-3 sm:gap-4">

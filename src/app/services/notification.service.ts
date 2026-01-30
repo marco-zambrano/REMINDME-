@@ -12,6 +12,7 @@ export class NotificationService {
   private isMonitoring = false;
   private monitoringSubscription: any = null;
   private readonly notifiedReminders = new Set<string>();
+  private timeCheckInterval: any = null;
 
   constructor() {}
 
@@ -94,6 +95,8 @@ export class NotificationService {
       }
 
       this.isMonitoring = true;
+      
+      // Monitoreo de ubicación para recordatorios por proximidad
       this.monitoringSubscription = this.geolocationService.watchPosition().subscribe({
         next: (currentLocation) => {
           this.checkRemindersNearby(currentLocation);
@@ -104,8 +107,69 @@ export class NotificationService {
         },
       });
 
-      console.log('Monitoreo de ubicación iniciado');
+      // Monitoreo de tiempo para recordatorios programados (cada 30 segundos)
+      this.startTimeMonitoring();
+
+      console.log('Monitoreo de ubicación y tiempo iniciado');
     });
+  }
+
+  /**
+   * Inicia el monitoreo de recordatorios programados por tiempo
+   */
+  private startTimeMonitoring(): void {
+    if (this.timeCheckInterval) {
+      return;
+    }
+
+    // Verificar inmediatamente
+    this.checkScheduledReminders();
+
+    // Verificar cada 30 segundos
+    this.timeCheckInterval = setInterval(() => {
+      this.checkScheduledReminders();
+    }, 30000);
+
+    console.log('Monitoreo de tiempo iniciado');
+  }
+
+  /**
+   * Verifica recordatorios programados que deben activarse
+   */
+  private async checkScheduledReminders(): Promise<void> {
+    try {
+      const activeReminders = await this.reminderService.getActiveReminders();
+      const now = new Date();
+
+      for (const reminder of activeReminders) {
+        // Saltar si ya fue notificado en esta sesión
+        if (reminder.id && this.notifiedReminders.has(reminder.id)) {
+          continue;
+        }
+
+        // Verificar recordatorios con activación temporal
+        if (
+          (reminder.activationType === 'time' || reminder.activationType === 'both') &&
+          reminder.scheduledTime &&
+          !reminder.isTimeActivated
+        ) {
+          const scheduledDate = new Date(reminder.scheduledTime);
+          
+          // Si ya pasó la hora programada (con margen de 1 minuto)
+          if (scheduledDate <= now && scheduledDate > new Date(now.getTime() - 60000)) {
+            console.log(`Recordatorio programado activado: ${reminder.title}`);
+            this.showReminderNotification(reminder);
+            
+            // Marcar como activado por tiempo
+            if (reminder.id) {
+              await this.reminderService.markAsTimeActivated(reminder.id);
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error al verificar recordatorios programados:', error);
+    }
   }
 
   /**
@@ -116,8 +180,14 @@ export class NotificationService {
       this.monitoringSubscription.unsubscribe();
       this.monitoringSubscription = null;
     }
+    
+    if (this.timeCheckInterval) {
+      clearInterval(this.timeCheckInterval);
+      this.timeCheckInterval = null;
+    }
+    
     this.isMonitoring = false;
-    console.log('Monitoreo de ubicación detenido');
+    console.log('Monitoreo de ubicación y tiempo detenido');
   }
 
   /**
@@ -134,16 +204,19 @@ export class NotificationService {
           continue;
         }
 
-        // Verificar si está dentro del radio
-        const isNearby = this.geolocationService.isWithinRadius(
-          reminder.location,
-          currentLocation,
-          reminder.radius
-        );
+        // Solo verificar proximidad si el tipo de activación lo requiere
+        if (reminder.activationType === 'location' || reminder.activationType === 'both') {
+          // Verificar si está dentro del radio
+          const isNearby = this.geolocationService.isWithinRadius(
+            reminder.location,
+            currentLocation,
+            reminder.radius
+          );
 
-        if (isNearby) {
-          console.log(`Recordatorio cercano detectado: ${reminder.title}`);
-          this.showReminderNotification(reminder);
+          if (isNearby) {
+            console.log(`Recordatorio cercano detectado: ${reminder.title}`);
+            this.showReminderNotification(reminder);
+          }
         }
       }
     } catch (error) {

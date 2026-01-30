@@ -42,6 +42,21 @@ export class App implements OnInit {
   protected readonly modalOpen = signal(false);
 
   async ngOnInit() {
+    // Silenciar errores conocidos en consola
+    const originalError = console.error;
+    console.error = function(...args: any[]) {
+      const msg = String(args[0] || '');
+      // Silenciar errores de Supabase Lock y geolocalización timeout
+      if (msg.includes('NavigatorLock') || 
+          msg.includes('lock:remindme-auth-token') ||
+          msg.includes('user location timed out') ||
+          msg.includes('Error obteniendo ubicación') ||
+          msg.includes('Error en el monitoreo de ubicación')) {
+        return;
+      }
+      originalError.apply(console, args);
+    };
+
     // Restaurar idioma guardado (solo páginas autenticadas usan i18n)
     const savedLang = typeof localStorage !== 'undefined' ? localStorage.getItem('remindme-lang') : null;
     if (savedLang === 'es' || savedLang === 'en') {

@@ -312,20 +312,51 @@
                 </div>
                 <p class="text-gray-600 dark:text-gray-400 mb-3">{{ reminder.description }}</p>
 
-                <div class="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
-                  <span class="flex items-center gap-1">
-                    <span class="material-symbols-rounded text-base">location_on</span>
-                    {{ reminder.location.name || reminder.location.address || 'Sin nombre' }}
+                <div class="flex flex-wrap items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+                  <!-- Tipo de Activación -->
+                  <span class="flex items-center gap-1 px-2 py-1 rounded" 
+                    [class]="reminder.activationType === 'location' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400' : 
+                             reminder.activationType === 'time' ? 'bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-400' : 
+                             'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400'">
+                    <span class="material-symbols-rounded text-base">
+                      {{ reminder.activationType === 'location' ? 'location_on' : 
+                         reminder.activationType === 'time' ? 'schedule' : 'hub' }}
+                    </span>
+                    <span class="font-medium">
+                      {{ reminder.activationType === 'location' ? 'Por ubicación' : 
+                         reminder.activationType === 'time' ? 'Por tiempo' : 'Ambos' }}
+                    </span>
                   </span>
-                  <span class="flex items-center gap-1">
-                    <span class="material-symbols-rounded text-base">straighten</span>
-                    Radio: {{ reminder.radius }}m
-                  </span>
-                  @if (currentLocation()) {
-                  <span class="flex items-center gap-1">
-                    <span class="material-symbols-rounded text-base">my_location</span>
-                    Distancia: {{ getDistanceToReminder(reminder) }}
-                  </span>
+
+                  @if (reminder.activationType === 'location' || reminder.activationType === 'both') {
+                    <span class="flex items-center gap-1">
+                      <span class="material-symbols-rounded text-base">place</span>
+                      {{ reminder.location.name || reminder.location.address || 'Sin nombre' }}
+                    </span>
+                    <span class="flex items-center gap-1">
+                      <span class="material-symbols-rounded text-base">straighten</span>
+                      Radio: {{ reminder.radius }}m
+                    </span>
+                    @if (currentLocation()) {
+                      <span class="flex items-center gap-1">
+                        <span class="material-symbols-rounded text-base">my_location</span>
+                        Distancia: {{ getDistanceToReminder(reminder) }}
+                      </span>
+                    }
+                  }
+
+                  @if (reminder.activationType === 'time' || reminder.activationType === 'both') {
+                    @if (reminder.scheduledTime) {
+                      <span class="flex items-center gap-1">
+                        <span class="material-symbols-rounded text-base">event</span>
+                        {{ formatDate(reminder.scheduledTime) }}
+                      </span>
+                      @if (reminder.isTimeActivated) {
+                        <span class="px-2 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs rounded-full">
+                          ✓ Activado
+                        </span>
+                      }
+                    }
                   }
                 </div>
               </div>

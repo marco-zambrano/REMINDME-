@@ -38,6 +38,11 @@ export class ReminderService {
         address: data.location_address,
       },
       radius: data.radius_meters, // radius_meters (DB) -> radius (TS)
+      
+      // Campos de activación temporal
+      scheduledTime: data.scheduled_time ? new Date(data.scheduled_time) : undefined,
+      isTimeActivated: data.is_time_activated || false,
+      activationType: data.activation_type || 'location',
     } as Reminder;
   }
 
@@ -61,6 +66,9 @@ export class ReminderService {
         updatedAt, // <-- Excluir: manejado automáticamente por Supabase
         createdAt, // <-- Excluir: no se puede actualizar
         id, // <-- Excluir: no se puede actualizar
+        scheduledTime,
+        isTimeActivated,
+        activationType,
         ...rest 
     } = updates as any;
 
@@ -91,6 +99,11 @@ export class ReminderService {
       location_name: locName,
       location_address: locAddress,
       radius_meters: radMeters,
+      
+      // Campos de activación temporal
+      ...(scheduledTime !== undefined && { scheduled_time: scheduledTime }),
+      ...(isTimeActivated !== undefined && { is_time_activated: isTimeActivated }),
+      ...(activationType !== undefined && { activation_type: activationType }),
     };
 
     return payload;
@@ -343,6 +356,13 @@ export class ReminderService {
    */
   async markAsNotified(id: string): Promise<void> {
     await this.updateReminder(id, { notified: true });
+  }
+
+  /**
+   * Marca un recordatorio como activado por tiempo.
+   */
+  async markAsTimeActivated(id: string): Promise<void> {
+    await this.updateReminder(id, { isTimeActivated: true });
   }
 
   /**
