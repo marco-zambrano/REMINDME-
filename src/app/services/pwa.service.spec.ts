@@ -1,8 +1,7 @@
-import { TestBed } from '@angular/core/testing';
 import { ApplicationRef } from '@angular/core';
 import { SwUpdate } from '@angular/service-worker';
 import { PwaService } from './pwa.service';
-import { of, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 
 describe('PwaService', () => {
   let service: PwaService;
@@ -27,15 +26,7 @@ describe('PwaService', () => {
     // Emitir true después de crear el servicio
     setTimeout(() => isStableSubject.next(true), 0);
 
-    TestBed.configureTestingModule({
-      providers: [
-        PwaService,
-        { provide: SwUpdate, useValue: mockSwUpdate },
-        { provide: ApplicationRef, useValue: mockAppRef },
-      ],
-    });
-
-    service = TestBed.inject(PwaService);
+    service = new PwaService(mockSwUpdate as any, mockAppRef as any);
   });
 
   it('should be created', () => {

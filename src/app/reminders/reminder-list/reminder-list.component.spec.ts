@@ -249,6 +249,7 @@ describe('ReminderListComponent', () => {
   });
 
   it('should calculate distance to reminder', () => {
+    component.currentLocation.set({ latitude: 40.7128, longitude: -74.0060 });
     const distance = component.getDistanceToReminder(mockReminders[0]);
     expect(distance).toBe('1.0km');
   });

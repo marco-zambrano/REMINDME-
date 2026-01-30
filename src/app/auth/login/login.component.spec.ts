@@ -111,7 +111,7 @@ describe('LoginComponent', () => {
       Promise.resolve({ data: null, error: { message: 'Invalid credentials' } } as any)
     );
 
-    component.form.setValue({ email: 'test@test.com', password: 'wrong' });
+    component.form.setValue({ email: 'test@test.com', password: 'wrongpw' });
     await component.onSubmit();
 
     expect(component.error).toBe('Invalid credentials');
