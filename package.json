@@ -7,7 +7,7 @@
     "build": "ng build",
     "build:prod": "ng build --configuration=production",
     "watch": "ng build --watch --configuration development",
-    "test": "echo \"Skipping tests\"",
+    "test": "ng test --no-watch --code-coverage",
     "docker:build": "docker build -t remindme-app .",
     "docker:run": "docker run -p 8080:8080 -e SUPABASE_URL=$SUPABASE_URL -e SUPABASE_KEY=$SUPABASE_KEY remindme-app",
     "gcloud:build": "gcloud builds submit --tag gcr.io/PROJECT_ID/remindme",
