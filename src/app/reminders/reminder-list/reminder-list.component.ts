@@ -12,10 +12,11 @@ import { Category } from '../../models';
 import { CategoryService } from '../../services/category.service';
 import { User } from '@supabase/supabase-js';
 import { IconNamePipe } from '../../shared/icon-name.pipe';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-reminder-list',
-  imports: [CommonModule, FormsModule, RouterLink, IconNamePipe],
+  imports: [CommonModule, FormsModule, RouterLink, IconNamePipe, TranslatePipe],
   templateUrl: './reminder-list.component.html',
   styleUrls: ['./reminder-list.component.css'],
 })

@@ -10,11 +10,12 @@ import { CategoryService } from '../../services/category.service';
 import { IconNamePipe } from '../../shared/icon-name.pipe';
 import { LocationPickerComponent } from '../../shared/location-picker/location-picker.component';
 import { GoogleMapsLocation } from '../../services/google-maps.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-reminder-form',
-  standalone: true, // Asegurando que es standalone para el uso moderno de Angular
-  imports: [CommonModule, FormsModule, RouterLink, IconNamePipe, LocationPickerComponent],
+  standalone: true,
+  imports: [CommonModule, FormsModule, RouterLink, IconNamePipe, LocationPickerComponent, TranslatePipe],
   templateUrl: './reminder-form.component.html',
   styleUrls: ['./reminder-form.component.css'],
 })

@@ -1,1 +1,101 @@
+<div appSpeakOnTap>
 <router-outlet />
+
+@if (showAccessibilityButton()) {
+  <div data-talkback-ignore>
+  <!-- Botón flotante accesibilidad -->
+  <button
+    type="button"
+    (click)="openAccessibilityModal()"
+    class="fixed bottom-6 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-purple-600 text-white shadow-lg transition hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+    title="Accesibilidad"
+    [attr.aria-label]="'accessibility.openAria' | translate"
+  >
+    <span class="material-symbols-rounded text-2xl">accessibility</span>
+  </button>
+
+  <!-- Modal accesibilidad -->
+  @if (modalOpen()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center">
+      <div
+        class="absolute inset-0 bg-black/40"
+        (click)="closeAccessibilityModal()"
+        aria-hidden="true"
+      ></div>
+      <div
+        class="relative z-50 w-full max-w-sm rounded-lg bg-white dark:bg-gray-800 p-5 shadow-xl mx-4"
+        role="dialog"
+        aria-labelledby="accessibility-title"
+        aria-modal="true"
+      >
+        <h2 id="accessibility-title" class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
+          {{ 'accessibility.title' | translate }}
+        </h2>
+        <ul class="space-y-3 text-sm text-gray-700 dark:text-gray-300">
+          <li class="flex items-center justify-between gap-4">
+            <span>{{ 'accessibility.darkMode' | translate }}</span>
+            <button
+              type="button"
+              (click)="themeService.toggleTheme()"
+              class="rounded-full bg-gray-200 dark:bg-gray-600 px-4 py-2 text-xs font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-500 transition-colors"
+              [attr.aria-pressed]="themeService.isDark()"
+            >
+              {{ themeService.isDark() ? ('accessibility.darkOn' | translate) : ('accessibility.darkOff' | translate) }}
+            </button>
+          </li>
+          <li class="flex items-center justify-between gap-4">
+            <span>{{ 'accessibility.language' | translate }}</span>
+            <div class="flex gap-1">
+              <button
+                type="button"
+                (click)="setLanguage('es')"
+                class="rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
+                [class.bg-blue-600]="translate.currentLang === 'es'"
+                [class.text-white]="translate.currentLang === 'es'"
+                [class.bg-gray-200]="translate.currentLang !== 'es'"
+                [class.dark:bg-gray-600]="translate.currentLang !== 'es'"
+                [class.text-gray-700]="translate.currentLang !== 'es'"
+                [class.dark:text-gray-200]="translate.currentLang !== 'es'"
+              >
+                {{ 'accessibility.langEs' | translate }}
+              </button>
+              <button
+                type="button"
+                (click)="setLanguage('en')"
+                class="rounded-lg px-3 py-1.5 text-xs font-medium transition-colors"
+                [class.bg-blue-600]="translate.currentLang === 'en'"
+                [class.text-white]="translate.currentLang === 'en'"
+                [class.bg-gray-200]="translate.currentLang !== 'en'"
+                [class.dark:bg-gray-600]="translate.currentLang !== 'en'"
+                [class.text-gray-700]="translate.currentLang !== 'en'"
+                [class.dark:text-gray-200]="translate.currentLang !== 'en'"
+              >
+                {{ 'accessibility.langEn' | translate }}
+              </button>
+            </div>
+          </li>
+          <li class="flex items-center justify-between gap-4">
+            <span>{{ 'accessibility.talkback' | translate }}</span>
+            <button
+              type="button"
+              (click)="talkbackService.toggle()"
+              class="rounded-full bg-gray-200 dark:bg-gray-600 px-4 py-2 text-xs font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-500 transition-colors"
+              [attr.aria-pressed]="talkbackService.enabled()"
+            >
+              {{ talkbackService.enabled() ? ('accessibility.talkbackOn' | translate) : ('accessibility.talkbackOff' | translate) }}
+            </button>
+          </li>
+        </ul>
+        <button
+          type="button"
+          (click)="closeAccessibilityModal()"
+          class="mt-4 w-full rounded-lg bg-gray-200 dark:bg-gray-600 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-500"
+        >
+          {{ 'accessibility.close' | translate }}
+        </button>
+      </div>
+    </div>
+  }
+  </div>
+}
+</div>
