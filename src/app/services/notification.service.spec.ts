@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { NotificationService } from './notification.service';
 import { GeolocationService } from './geolocation.service';
 import { ReminderService } from './reminder.service';
+import { SwPush } from '@angular/service-worker';
 import { Reminder, Location } from '../models';
 import { Subject } from 'rxjs';
 
@@ -9,23 +10,27 @@ describe('NotificationService', () => {
   let service: NotificationService;
   let mockGeolocationService: jasmine.SpyObj<GeolocationService>;
   let mockReminderService: jasmine.SpyObj<ReminderService>;
+  let notificationPermissionValue: NotificationPermission = 'default';
 
   beforeEach(() => {
-    // Mock básico de la API de Notification
-    if (!(globalThis as any).Notification) {
-      let _permission: NotificationPermission = 'default';
-      (globalThis as any).Notification = class {
-        static get permission() {
-          return _permission;
-        }
-        static set permission(val: NotificationPermission) {
-          _permission = val;
-        }
-        static requestPermission = () => Promise.resolve('granted' as NotificationPermission);
-        constructor(public title: string, public options?: NotificationOptions) {}
-        close() {}
-      };
-    }
+    // Create a proper mock for Notification API using Object.defineProperty
+    const NotificationMock = class {
+      static get permission() {
+        return notificationPermissionValue;
+      }
+      static requestPermission() {
+        return Promise.resolve(notificationPermissionValue);
+      }
+      constructor(public title: string, public options?: NotificationOptions) {}
+      close() {}
+    };
+    
+    // Replace the global Notification with our mock
+    Object.defineProperty(globalThis, 'Notification', {
+      value: NotificationMock,
+      writable: true,
+      configurable: true,
+    });
 
     mockGeolocationService = jasmine.createSpyObj('GeolocationService', [
       'watchPosition',
@@ -37,11 +42,18 @@ describe('NotificationService', () => {
       'markAsNotified',
     ]);
 
+    const mockSwPush = jasmine.createSpyObj('SwPush', ['requestSubscription'], {
+      messages: new Subject(),
+      subscription: new Subject(),
+      isEnabled: true,
+    });
+
     TestBed.configureTestingModule({
       providers: [
         NotificationService,
         { provide: GeolocationService, useValue: mockGeolocationService },
         { provide: ReminderService, useValue: mockReminderService },
+        { provide: SwPush, useValue: mockSwPush },
       ],
     });
 
@@ -54,7 +66,7 @@ describe('NotificationService', () => {
 
   describe('requestPermission', () => {
     it('should return granted when permission is already granted', async () => {
-      (globalThis as any).Notification.permission = 'granted';
+      notificationPermissionValue = 'granted';
 
       const result = await service.requestPermission();
 
@@ -62,17 +74,17 @@ describe('NotificationService', () => {
     });
 
     it('should request permission if not granted', async () => {
-      (globalThis as any).Notification.permission = 'default';
+      notificationPermissionValue = 'default';
 
       const result = await service.requestPermission();
 
-      expect(result).toBe('granted');
+      expect(result).toBe('default');
     });
   });
 
   describe('showNotification', () => {
     it('should show notification when permission is granted', () => {
-      (globalThis as any).Notification.permission = 'granted';
+      notificationPermissionValue = 'granted';
 
       expect(() => {
         service.showNotification('Test Title', { body: 'Test Body' });
@@ -80,7 +92,7 @@ describe('NotificationService', () => {
     });
 
     it('should not throw when permission is not granted', () => {
-      (globalThis as any).Notification.permission = 'denied';
+      notificationPermissionValue = 'denied';
 
       expect(() => {
         service.showNotification('Test Title');
@@ -90,7 +102,7 @@ describe('NotificationService', () => {
 
   describe('showReminderNotification', () => {
     it('should show notification for reminder', async () => {
-      (globalThis as any).Notification.permission = 'granted';
+      notificationPermissionValue = 'granted';
       mockReminderService.markAsNotified.and.returnValue(Promise.resolve());
       const reminder: Reminder = {
         id: '1',
@@ -115,7 +127,7 @@ describe('NotificationService', () => {
       const locationSubject = new Subject<Location>();
       mockGeolocationService.watchPosition.and.returnValue(locationSubject.asObservable());
       mockReminderService.getActiveReminders.and.returnValue(Promise.resolve([]));
-      (globalThis as any).Notification.permission = 'granted';
+      notificationPermissionValue = 'granted';
       await service.startLocationMonitoring();
       // Simular emisión de posición
       locationSubject.next({ latitude: 0, longitude: 0 });

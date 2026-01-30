@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { provideRouter } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -15,11 +16,13 @@ describe('LoginComponent', () => {
 
   beforeEach(async () => {
     mockSupabaseService = jasmine.createSpyObj('SupabaseService', ['signIn', 'getCurrentUser']);
-    mockRouter = jasmine.createSpyObj('Router', ['navigate']);
+    const mockRouterObj = jasmine.createSpyObj('Router', ['navigate', 'createUrlTree', 'serializeUrl']);
+    mockRouterObj.createUrlTree.and.returnValue({} as any);
+    mockRouterObj.serializeUrl.and.returnValue('');
+    mockRouter = { ...mockRouterObj, events: of({}) };
 
     await TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule],
-      declarations: [LoginComponent],
+      imports: [ReactiveFormsModule, LoginComponent],
       providers: [
         { provide: SupabaseService, useValue: mockSupabaseService },
         { provide: Router, useValue: mockRouter },

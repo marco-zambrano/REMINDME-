@@ -7,6 +7,7 @@ import { SupabaseService } from '../../services/supabase.service';
 import { PwaService } from '../../services/pwa.service';
 import { CategoryService } from '../../services/category.service';
 import { Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { provideRouter } from '@angular/router';
 import { of, BehaviorSubject } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
@@ -135,6 +136,10 @@ describe('ReminderListComponent', () => {
     };
 
     mockRouter = jasmine.createSpyObj('Router', ['navigate']);
+      mockRouter = jasmine.createSpyObj('Router', ['navigate', 'createUrlTree', 'serializeUrl']);
+      mockRouter.createUrlTree.and.returnValue({} as any);
+      mockRouter.serializeUrl.and.returnValue('');
+      (mockRouter as any).events = of({});
 
     mockGeolocationService.getCurrentPosition.and.returnValue(
       of({ latitude: 40.7128, longitude: -74.006 })
@@ -146,8 +151,7 @@ describe('ReminderListComponent', () => {
     mockPwaService.isInstalled.and.returnValue(false);
 
     await TestBed.configureTestingModule({
-      imports: [ReminderListComponent],
-      declarations: [],
+      imports: [ReminderListComponent, TranslateModule.forRoot()],
       providers: [
         { provide: ReminderService, useValue: mockReminderService },
         { provide: NotificationService, useValue: mockNotificationService },

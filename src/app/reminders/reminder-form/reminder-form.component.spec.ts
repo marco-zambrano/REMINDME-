@@ -5,7 +5,7 @@ import { GeolocationService } from '../../services/geolocation.service';
 import { SupabaseService } from '../../services/supabase.service';
 import { CategoryService } from '../../services/category.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { provideRouter } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import { Location } from '../../models';
 
@@ -42,6 +42,10 @@ describe('ReminderFormComponent', () => {
     );
 
     mockRouter = jasmine.createSpyObj('Router', ['navigate']);
+      mockRouter = jasmine.createSpyObj('Router', ['navigate', 'createUrlTree', 'serializeUrl']);
+      mockRouter.createUrlTree.and.returnValue({} as any);
+      mockRouter.serializeUrl.and.returnValue('');
+      (mockRouter as any).events = of({});
     mockActivatedRoute = {
       snapshot: {
         paramMap: {
@@ -59,7 +63,7 @@ describe('ReminderFormComponent', () => {
     ]);
 
     await TestBed.configureTestingModule({
-      imports: [ReminderFormComponent, provideRouter([])],
+      imports: [ReminderFormComponent, TranslateModule.forRoot()],
       providers: [
         { provide: ReminderService, useValue: mockReminderService },
         { provide: GeolocationService, useValue: mockGeolocationService },

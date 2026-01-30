@@ -8,7 +8,10 @@ describe('authGuard', () => {
   let mockRouter: jasmine.SpyObj<Router>;
 
   beforeEach(() => {
-    mockSupabaseService = jasmine.createSpyObj('SupabaseService', ['getCurrentUser']);
+    mockSupabaseService = jasmine.createSpyObj('SupabaseService', [
+      'getCurrentUser',
+      'waitForSessionInitialized',
+    ]);
     mockRouter = jasmine.createSpyObj('Router', ['navigate']);
 
     TestBed.configureTestingModule({
@@ -20,10 +23,12 @@ describe('authGuard', () => {
   });
 
   it('should allow access when user is authenticated', async () => {
-    mockSupabaseService.getCurrentUser.and.returnValue({
+    const mockUser = {
       id: '123',
       email: 'test@test.com',
-    } as any);
+    } as any;
+    mockSupabaseService.waitForSessionInitialized.and.returnValue(Promise.resolve(mockUser));
+    mockSupabaseService.getCurrentUser.and.returnValue(mockUser);
 
     TestBed.runInInjectionContext(async () => {
       const result = await authGuard();
@@ -33,6 +38,7 @@ describe('authGuard', () => {
   });
 
   it('should redirect to login when user is not authenticated', async () => {
+    mockSupabaseService.waitForSessionInitialized.and.returnValue(Promise.resolve(null));
     mockSupabaseService.getCurrentUser.and.returnValue(null);
 
     TestBed.runInInjectionContext(async () => {
