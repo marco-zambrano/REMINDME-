@@ -146,8 +146,8 @@ describe('ReminderListComponent', () => {
     mockPwaService.isInstalled.and.returnValue(false);
 
     await TestBed.configureTestingModule({
-      imports: [],
-      declarations: [ReminderListComponent],
+      imports: [ReminderListComponent],
+      declarations: [],
       providers: [
         { provide: ReminderService, useValue: mockReminderService },
         { provide: NotificationService, useValue: mockNotificationService },

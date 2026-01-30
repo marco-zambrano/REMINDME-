@@ -19,24 +19,24 @@ describe('authGuard', () => {
     });
   });
 
-  it('should allow access when user is authenticated', () => {
+  it('should allow access when user is authenticated', async () => {
     mockSupabaseService.getCurrentUser.and.returnValue({
       id: '123',
       email: 'test@test.com',
     } as any);
 
-    TestBed.runInInjectionContext(() => {
-      const result = authGuard();
+    TestBed.runInInjectionContext(async () => {
+      const result = await authGuard();
       expect(result).toBe(true);
       expect(mockRouter.navigate).not.toHaveBeenCalled();
     });
   });
 
-  it('should redirect to login when user is not authenticated', () => {
+  it('should redirect to login when user is not authenticated', async () => {
     mockSupabaseService.getCurrentUser.and.returnValue(null);
 
-    TestBed.runInInjectionContext(() => {
-      const result = authGuard();
+    TestBed.runInInjectionContext(async () => {
+      const result = await authGuard();
       expect(result).toBe(false);
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/login']);
     });
