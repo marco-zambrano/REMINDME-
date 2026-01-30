@@ -1,43 +1,57 @@
-# 📍 REMINDME - Recordatorios Inteligentes con Geolocalización
+﻿# RemindMe
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
-![Angular](https://img.shields.io/badge/Angular-20.3-red.svg)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)
-![License](https://img.shields.io/badge/license-MIT-green.svg)
+App para crear recordatorios que se activan cuando llegas a una ubicación específica. Usa tu ubicación GPS para notificarte cuando estés cerca de un lugar importante.
 
-## 🎯 Descripción del Proyecto
+## Demo en Vivo
 
-**RemindMe** es una aplicación web progresiva (PWA) que resuelve el problema de olvidar tareas importantes cuando estás cerca de lugares específicos. Por ejemplo, te recuerda comprar leche cuando pasas por el supermercado o recoger documentos cuando estás cerca de la oficina.
+Prueba la app sin instalación:
+- [Azure](https://remindme-dubxaedzd8aff3cf.canadacentral-01.azurewebsites.net/home)
+- [Google Cloud](https://remindme-705782152648.us-central1.run.app/home)
 
-## ✨ Características Principales
+## ¿Cómo funciona?
 
-### 📍 Recordatorios Basados en Ubicación
+1. Te registras con tu email
+2. Creas un recordatorio (ej: "Comprar leche en el supermercado")
+3. Seleccionas la ubicación en el mapa
+4. Defines un radio (ejemplo: 100 metros)
+5. La app detecta cuándo llegas a esa zona usando GPS
+6. Recibes una notificación cuando estés cerca
 
-- Crea recordatorios vinculados a lugares específicos
-- Define un radio de proximidad personalizable (100m - 2km)
-- Recibe notificaciones automáticas al acercarte al lugar
+## Instalación
 
-### 🔐 Autenticación Segura
+### Requisitos Previos
 
-- Sistema de registro e inicio de sesión con Supabase
-- Protección de rutas con guards
-- Gestión segura de sesiones
+- **Node.js** versión 18 o superior
+- **npm** (incluido con Node.js)
+- Cuenta en **Supabase** (gratis en supabase.com)
+- **API Key de Google Maps** (gratis en developers.google.com/maps)
 
-### 📱 Progressive Web App (PWA)
+### Pasos de Instalación
 
-- Instalable en dispositivos móviles y escritorio
-- Funciona offline
-- Actualizaciones automáticas en segundo plano
-- Notificaciones push nativas
+1. **Clona el repositorio**
+`ash
+git clone https://github.com/marco-zambrano/REMINDME-.git
+cd REMINDME-
+`
 
-### 🎨 Categorización Inteligente
+2. **Instala las dependencias**
+`ash
+npm install
+`
 
-- Organiza recordatorios por categorías personalizadas
-- Colores e iconos customizables
-- Filtrado rápido por categoría
+3. **Configura las variables de entorno**
 
-### ✅ Gestión de Tareas
+Edita el archivo src/environments/environment.ts:
+`	ypescript
+export const environment = {
+  production: false,
+  supabaseUrl: 'tu-url-supabase',
+  supabaseKey: 'tu-key-supabase',
+  googleMapsApiKey: 'tu-api-key-google-maps'
+};
+`
 
+<<<<<<< HEAD
 - Marca recordatorios como completados
 - Historial de recordatorios
 - Estadísticas de uso
@@ -90,96 +104,92 @@ El proyecto utiliza un sistema robusto de variables de entorno que funciona tant
 En desarrollo, las variables están pre-configuradas en [src/environments/environment.ts](src/environments/environment.ts). Solo ejecuta:
 
 ```bash
+=======
+4. **Inicia el servidor de desarrollo**
+`ash
+>>>>>>> 1fad9076d33471ec60dcb082eb0caffbabc77c0f
 npm start
-```
+`
 
-### Producción (Docker/Cloud)
+Abre tu navegador en http://localhost:4200
 
-En producción, las variables se inyectan dinámicamente:
+## Cómo Usar
 
-```bash
-docker run -p 8080:8080 \
-  -e SUPABASE_URL="https://tu-proyecto.supabase.co" \
-  -e SUPABASE_KEY="tu-clave-aqui" \
-  -e GOOGLE_MAPS_API_KEY="tu-api-key-aqui" \
-  remindme-app
-```
+### Crear una Cuenta
 
-📚 **Documentación completa:** Ver [ENVIRONMENT_VARIABLES.md](./ENVIRONMENT_VARIABLES.md) para detalles sobre configuración, deployment y mejores prácticas.
+1. Ve a la página de registro
+2. Ingresa tu email y contraseña
+3. Confirma tu email
+4. Ya puedes iniciar sesión
 
-## Development server
+### Crear un Recordatorio
 
-To start a local development server, run:
+1. Haz clic en "Nuevo Recordatorio"
+2. Completa los campos:
+   - **Título**: Qué necesitas recordar (ej: "Comprar leche")
+   - **Descripción**: Detalles adicionales (opcional)
+   - **Categoría**: Selecciona o crea una categoría (Trabajo, Personal, Compras, etc)
+   - **Ubicación**: Haz clic en el mapa y marca el lugar
+   - **Radio de Notificación**: Define a qué distancia te notificará (en metros)
+3. Guarda el recordatorio
 
-```bash
-ng serve
-```
+### Gestionar Recordatorios
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+- **Ver todos**: Se muestran en la página principal
+- **Editar**: Haz clic en un recordatorio para modificarlo
+- **Eliminar**: Elimina recordatorios que ya no necesites
+- **Marcar como completado**: Indica cuándo ya lo hiciste
 
-## Code scaffolding
+### Configuración
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+- **Cambiar idioma**: Inglés o Español
+- **Modo oscuro**: Activa desde las opciones
+- **Notificaciones**: Habilita o deshabilita alertas
 
-```bash
-ng generate component component-name
-```
+## Comandos Disponibles
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+`ash
+npm start              # Inicia el servidor de desarrollo en http://localhost:4200
+npm run build:prod     # Crea una versión optimizada para producción
+npm test               # Ejecuta las pruebas unitarias
+npm run watch          # Modo observación para cambios automáticos
+`
 
-```bash
-ng generate --help
-```
+## Características
 
-## Building
+-  Recordatorios basados en ubicación GPS
+-  Autenticación segura con Supabase
+-  Integración con Google Maps
+-  Notificaciones en tiempo real
+-  Categorías para organizar recordatorios
+-  Multiidioma (Español e Inglés)
+-  Modo oscuro
+-  Funciona en dispositivos móviles
+-  PWA (se puede instalar como app)
 
-To build the project run:
+## Stack Tecnológico
 
-```bash
-ng build
-```
+- **Frontend**: Angular 20, TypeScript
+- **Estilos**: Tailwind CSS 4
+- **Backend**: Supabase (PostgreSQL)
+- **Autenticación**: Supabase Auth
+- **Mapas**: Google Maps API
+- **Testing**: Jasmine y Karma
+- **i18n**: ngx-translate
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## Contribuir
 
-## Running unit tests
+¿Encontraste un bug o tienes una sugerencia?
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+1. [Abre un issue](https://github.com/marco-zambrano/REMINDME-/issues) describiendo el problema
+2. O haz un fork y crea un Pull Request
 
-```bash
-ng test
-```
+Ver [CONTRIBUTING.md](CONTRIBUTING.md) para más detalles.
 
-### 🧪 Estado de los Tests
+## Repositorio
 
-✅ **Cobertura Completa de Tests Unitarios**
+[marco-zambrano/REMINDME-](https://github.com/marco-zambrano/REMINDME-)
 
-- **16 archivos de test** creados/corregidos
-- **~500 casos de prueba** implementados
-- **100% de cobertura** en componentes, servicios, guards y pipes
+---
 
-📚 **Documentación de Tests:**
-
-- [README_TESTS.md](./README_TESTS.md) - Índice de documentación
-- [EXECUTIVE_SUMMARY.md](./EXECUTIVE_SUMMARY.md) - Resumen ejecutivo
-- [TESTS_SUMMARY.md](./TESTS_SUMMARY.md) - Detalles técnicos
-- [HOW_TO_RUN_TESTS.md](./HOW_TO_RUN_TESTS.md) - Guía de ejecución
-
-**Ejecutar tests con cobertura:**
-
-```bash
-ng test --code-coverage
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+¿Te gusta RemindMe?  Apóyalo dando una estrella en GitHub

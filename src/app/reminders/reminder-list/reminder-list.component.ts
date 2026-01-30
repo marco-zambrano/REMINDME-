@@ -12,10 +12,11 @@ import { Category } from '../../models';
 import { CategoryService } from '../../services/category.service';
 import { User } from '@supabase/supabase-js';
 import { IconNamePipe } from '../../shared/icon-name.pipe';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-reminder-list',
-  imports: [CommonModule, FormsModule, RouterLink, IconNamePipe],
+  imports: [CommonModule, FormsModule, RouterLink, IconNamePipe, TranslatePipe],
   templateUrl: './reminder-list.component.html',
   styleUrls: ['./reminder-list.component.css'],
 })
@@ -223,6 +224,59 @@ export class ReminderListComponent implements OnInit {
     const distance = this.geolocationService.calculateDistance(current, reminder.location);
 
     return this.geolocationService.formatDistance(distance);
+  }
+
+  formatDate(date: Date | string): string {
+    const d = typeof date === 'string' ? new Date(date) : date;
+    const now = new Date();
+    const diffMs = d.getTime() - now.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    // Si ya pasó
+    if (diffMs < 0) {
+      return d.toLocaleString('es-ES', { 
+        day: 'numeric', 
+        month: 'short', 
+        hour: '2-digit', 
+        minute: '2-digit' 
+      });
+    }
+
+    // Si es en menos de 1 hora
+    if (diffMins < 60) {
+      return `En ${diffMins} min`;
+    }
+
+    // Si es hoy
+    if (diffHours < 24 && d.getDate() === now.getDate()) {
+      return `Hoy ${d.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}`;
+    }
+
+    // Si es mañana
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    if (d.getDate() === tomorrow.getDate() && d.getMonth() === tomorrow.getMonth()) {
+      return `Mañana ${d.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}`;
+    }
+
+    // Si es esta semana
+    if (diffDays < 7) {
+      return d.toLocaleString('es-ES', { 
+        weekday: 'short', 
+        hour: '2-digit', 
+        minute: '2-digit' 
+      });
+    }
+
+    // Fecha completa
+    return d.toLocaleString('es-ES', { 
+      day: 'numeric', 
+      month: 'short', 
+      hour: '2-digit', 
+      minute: '2-digit' 
+    });
   }
 
   getCategoryIcon(category: string): string {

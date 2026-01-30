@@ -10,11 +10,12 @@ import { CategoryService } from '../../services/category.service';
 import { IconNamePipe } from '../../shared/icon-name.pipe';
 import { LocationPickerComponent } from '../../shared/location-picker/location-picker.component';
 import { GoogleMapsLocation } from '../../services/google-maps.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-reminder-form',
-  standalone: true, // Asegurando que es standalone para el uso moderno de Angular
-  imports: [CommonModule, FormsModule, RouterLink, IconNamePipe, LocationPickerComponent],
+  standalone: true,
+  imports: [CommonModule, FormsModule, RouterLink, IconNamePipe, LocationPickerComponent, TranslatePipe],
   templateUrl: './reminder-form.component.html',
   styleUrls: ['./reminder-form.component.css'],
 })
@@ -40,6 +41,10 @@ export class ReminderFormComponent implements OnInit {
   // Usamos 'slug' en el <select> del template, por eso mantenemos el tipo string.
   categorySlug = signal<string>('');
   radius = signal(500);
+
+  // Campos de activación temporal
+  activationType = signal<'location' | 'time' | 'both'>('location');
+  scheduledTime = signal<string>('');
 
   // Ubicación
   location = signal<Location | null>(null);
@@ -119,6 +124,19 @@ export class ReminderFormComponent implements OnInit {
         this.categorySlug.set(reminder.category);
         this.radius.set(reminder.radius);
 
+        // Cargar tipo de activación y fecha programada
+        this.activationType.set(reminder.activationType || 'location');
+        if (reminder.scheduledTime) {
+          // Convertir Date a formato datetime-local (YYYY-MM-DDTHH:mm)
+          const date = new Date(reminder.scheduledTime);
+          const year = date.getFullYear();
+          const month = String(date.getMonth() + 1).padStart(2, '0');
+          const day = String(date.getDate()).padStart(2, '0');
+          const hours = String(date.getHours()).padStart(2, '0');
+          const minutes = String(date.getMinutes()).padStart(2, '0');
+          this.scheduledTime.set(`${year}-${month}-${day}T${hours}:${minutes}`);
+        }
+
         // Asignación de campos de ubicación desde el objeto location
         this.location.set(reminder.location);
         this.locationName.set(reminder.location?.name || '');
@@ -146,22 +164,36 @@ export class ReminderFormComponent implements OnInit {
           this.isLoadingLocation.set(false);
         },
         error: (error) => {
-          console.error('Error obteniendo ubicación:', error);
-          this.message.set({
-            type: 'error',
-            text: 'No se pudo obtener la ubicación actual. Intenta manualmente.',
-          });
+          console.warn('⚠️ No se pudo obtener la ubicación automáticamente:', error);
+          // No mostrar mensaje de error intrusivo en carga automática
+          // El usuario puede usar los botones para obtener ubicación manualmente
           this.isLoadingLocation.set(false);
         },
       });
     } catch (error) {
-      console.error('Error:', error);
+      console.warn('⚠️ Error al solicitar ubicación:', error);
       this.isLoadingLocation.set(false);
     }
   }
 
   useCurrentLocation() {
-    this.getCurrentLocation();
+    this.isLoadingLocation.set(true);
+    this.geolocationService.getCurrentPosition().subscribe({
+      next: (loc) => {
+        this.location.set(loc);
+        this.locationName.set('Mi ubicación actual');
+        this.locationAddress.set(`${loc.latitude.toFixed(4)}, ${loc.longitude.toFixed(4)}`);
+        this.isLoadingLocation.set(false);
+      },
+      error: (error) => {
+        console.error('Error obteniendo ubicación:', error);
+        this.message.set({
+          type: 'error',
+          text: 'No se pudo obtener tu ubicación. Verifica los permisos del navegador o usa otra opción.',
+        });
+        this.isLoadingLocation.set(false);
+      },
+    });
   }
 
   async save() {
@@ -171,8 +203,22 @@ export class ReminderFormComponent implements OnInit {
       return;
     }
 
+    // Validar según el tipo de activación
+    if (this.activationType() === 'time' || this.activationType() === 'both') {
+      if (!this.scheduledTime()) {
+        this.message.set({ type: 'error', text: 'Por favor, selecciona una fecha y hora de activación.' });
+        return;
+      }
+      // Validar que la fecha sea futura
+      const selectedDate = new Date(this.scheduledTime());
+      if (selectedDate <= new Date()) {
+        this.message.set({ type: 'error', text: 'La fecha de activación debe ser futura.' });
+        return;
+      }
+    }
+
     const currentLoc = this.location();
-    if (!currentLoc) {
+    if ((this.activationType() === 'location' || this.activationType() === 'both') && !currentLoc) {
       this.message.set({ type: 'error', text: 'Por favor, selecciona una ubicación.' });
       return;
     }
@@ -201,22 +247,40 @@ export class ReminderFormComponent implements OnInit {
 
     try {
       // 3. Construir los datos del recordatorio con el UUID
-      const reminderData = {
+      const reminderData: any = {
         userId: user.id,
         title: this.title(),
         description: this.description(),
         // 🔑 ENVIAMOS EL UUID (selectedCategory.id) A LA PROPIEDAD 'category'
         category: selectedCategory.id,
         radius: this.radius(), // Radio en metros
-        location: {
-          latitude: currentLoc.latitude,
-          longitude: currentLoc.longitude,
-          name: this.locationName(),
-          address: this.locationAddress(),
-        },
         completed: false,
         notified: false,
+        // Campos de activación temporal
+        activationType: this.activationType(),
+        scheduledTime: this.scheduledTime() ? new Date(this.scheduledTime()) : null,
+        isTimeActivated: false,
       };
+
+      // Solo añadir ubicación si el tipo de activación lo requiere
+      if (this.activationType() === 'location' || this.activationType() === 'both') {
+        if (currentLoc) {
+          reminderData.location = {
+            latitude: currentLoc.latitude,
+            longitude: currentLoc.longitude,
+            name: this.locationName(),
+            address: this.locationAddress(),
+          };
+        }
+      } else {
+        // Para activación solo por tiempo, usar ubicación predeterminada
+        reminderData.location = {
+          latitude: 0,
+          longitude: 0,
+          name: 'Sin ubicación',
+          address: 'Activación por tiempo',
+        };
+      }
 
       if (this.isEditMode() && this.reminderId()) {
         const id = this.reminderId()!;
@@ -297,5 +361,36 @@ export class ReminderFormComponent implements OnInit {
 
   updateRadius(radius: number) {
     this.radius.set(radius);
+  }
+
+  updateActivationType(type: 'location' | 'time' | 'both') {
+    this.activationType.set(type);
+    // Limpiar scheduledTime si cambiamos a 'location'
+    if (type === 'location') {
+      this.scheduledTime.set('');
+    }
+  }
+
+  getMinDateTime(): string {
+    // Retorna la fecha/hora actual en formato datetime-local
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  }
+
+  formatScheduledTime(): string {
+    if (!this.scheduledTime()) return '';
+    const date = new Date(this.scheduledTime());
+    return date.toLocaleString('es-ES', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
   }
 }

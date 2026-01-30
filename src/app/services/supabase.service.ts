@@ -30,10 +30,7 @@ export class SupabaseService {
       },
     });
 
-    // Crear promesa para esperar la inicialización
-    this.sessionInitializedPromise = this.initializeSession();
-
-    // Crear promesa para esperar la inicialización
+    // Crear promesa para esperar la inicialización (una sola vez)
     this.sessionInitializedPromise = this.initializeSession();
 
     // Escuchar cambios de autenticación
@@ -47,8 +44,10 @@ export class SupabaseService {
       const { data } = await this.supabase.auth.getSession();
       this.currentUser.next(data.session?.user ?? null);
     } catch (error: any) {
-      // Silenciar errores de lock en desarrollo (son normales cuando hay múltiples pestañas)
-      if (!error.message?.includes('NavigatorLock')) {
+      // Silenciar todos los errores de lock - son normales
+      if (error.message?.includes('Lock') || error.message?.includes('lock') || error.name?.includes('Lock')) {
+        // Ignorar completamente
+      } else {
         console.warn('⚠️ Error al obtener sesión:', error);
       }
       this.currentUser.next(null);

@@ -8,7 +8,10 @@ describe('authGuard', () => {
   let mockRouter: jasmine.SpyObj<Router>;
 
   beforeEach(() => {
-    mockSupabaseService = jasmine.createSpyObj('SupabaseService', ['getCurrentUser']);
+    mockSupabaseService = jasmine.createSpyObj('SupabaseService', [
+      'getCurrentUser',
+      'waitForSessionInitialized',
+    ]);
     mockRouter = jasmine.createSpyObj('Router', ['navigate']);
 
     TestBed.configureTestingModule({
@@ -19,24 +22,27 @@ describe('authGuard', () => {
     });
   });
 
-  it('should allow access when user is authenticated', () => {
-    mockSupabaseService.getCurrentUser.and.returnValue({
+  it('should allow access when user is authenticated', async () => {
+    const mockUser = {
       id: '123',
       email: 'test@test.com',
-    } as any);
+    } as any;
+    mockSupabaseService.waitForSessionInitialized.and.returnValue(Promise.resolve(mockUser));
+    mockSupabaseService.getCurrentUser.and.returnValue(mockUser);
 
-    TestBed.runInInjectionContext(() => {
-      const result = authGuard();
+    TestBed.runInInjectionContext(async () => {
+      const result = await authGuard();
       expect(result).toBe(true);
       expect(mockRouter.navigate).not.toHaveBeenCalled();
     });
   });
 
-  it('should redirect to login when user is not authenticated', () => {
+  it('should redirect to login when user is not authenticated', async () => {
+    mockSupabaseService.waitForSessionInitialized.and.returnValue(Promise.resolve(null));
     mockSupabaseService.getCurrentUser.and.returnValue(null);
 
-    TestBed.runInInjectionContext(() => {
-      const result = authGuard();
+    TestBed.runInInjectionContext(async () => {
+      const result = await authGuard();
       expect(result).toBe(false);
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/login']);
     });

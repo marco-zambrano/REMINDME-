@@ -21,8 +21,8 @@ RemindMe utiliza **Supabase** como backend (PostgreSQL + Auth + REST API) y **Go
 
 ### URLs Base
 
-- **Supabase REST API**: `https://YOUR_PROJECT_ID.supabase.co/rest/v1`
-- **Supabase Auth**: `https://YOUR_PROJECT_ID.supabase.co/auth/v1`
+- **Supabase REST API**: `https://ebrtyrkyacahgkraxbwa.supabase.co/rest/v1`
+- **Supabase Auth**: `https://ebrtyrkyacahgkraxbwa.supabase.co/auth/v1`
 - **Google Maps**: `https://maps.googleapis.com/maps/api`
 
 ---
@@ -33,11 +33,11 @@ RemindMe utiliza **Supabase** como backend (PostgreSQL + Auth + REST API) y **Go
 
 ```bash
 # Supabase
-SUPABASE_URL=https://YOUR_PROJECT_ID.supabase.co
-SUPABASE_KEY=your_supabase_anon_key_here
+SUPABASE_URL=https://ebrtyrkyacahgkraxbwa.supabase.co
+SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
 # Google Maps
-GOOGLE_MAPS_API_KEY=your_google_maps_api_key_here
+GOOGLE_MAPS_API_KEY=AIzaSyDUiE88hy3-JSp--ikfI81W-mYR0BkssuQ
 ```
 
 ### Headers Comunes
@@ -822,15 +822,15 @@ interface AuthResponse {
 
 ```bash
 # 1. Registro
-curl -X POST "https://YOUR_PROJECT_ID.supabase.co/auth/v1/signup" \
-  -H "apikey: YOUR_SUPABASE_KEY" \
+curl -X POST "https://ebrtyrkyacahgkraxbwa.supabase.co/auth/v1/signup" \
+  -H "apikey: YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{"email":"test@ejemplo.com","password":"password123"}'
 
 # Respuesta incluye access_token y user.id
 
 # 2. Crear una categoría
-curl -X POST "https://YOUR_PROJECT_ID.supabase.co/rest/v1/categories" \
+curl -X POST "https://ebrtyrkyacahgkraxbwa.supabase.co/rest/v1/categories" \
   -H "apikey: YOUR_KEY" \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
@@ -838,9 +838,9 @@ curl -X POST "https://YOUR_PROJECT_ID.supabase.co/rest/v1/categories" \
   -d '{"name":"Compras","color":"bg-green-500","created_by":"USER_ID"}'
 
 # 3. Crear recordatorio
-curl -X POST "https://YOUR_PROJECT_ID.supabase.co/rest/v1/reminders" \
-  -H "apikey: YOUR_SUPABASE_KEY" \
-  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+curl -X POST "https://ebrtyrkyacahgkraxbwa.supabase.co/rest/v1/reminders" \
+  -H "apikey: YOUR_KEY" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
   -H "Prefer: return=representation" \
   -d '{
@@ -903,9 +903,9 @@ He creado una colección completa en Postman con todos los endpoints documentado
 La colección incluye estas variables:
 
 ```
-SUPABASE_URL = https://YOUR_PROJECT_ID.supabase.co
-SUPABASE_KEY = your_supabase_anon_key_here
-GOOGLE_MAPS_API_KEY = your_google_maps_api_key_here
+SUPABASE_URL = https://ebrtyrkyacahgkraxbwa.supabase.co
+SUPABASE_KEY = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+GOOGLE_MAPS_API_KEY = AIzaSyDUiE88hy3-JSp--ikfI81W-mYR0BkssuQ
 ACCESS_TOKEN = (se llena automáticamente después del login)
 USER_ID = (se llena automáticamente después del login)
 ```

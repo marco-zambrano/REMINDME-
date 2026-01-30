@@ -3,6 +3,7 @@ import { SupabaseService } from './supabase.service';
 import { environment } from '../../environments/environment';
 import { take } from 'rxjs/operators';
 import { of } from 'rxjs';
+import type { User } from '@supabase/supabase-js';
 
 describe('SupabaseService', () => {
   let service: SupabaseService;
@@ -12,14 +13,25 @@ describe('SupabaseService', () => {
     service = TestBed.inject(SupabaseService);
 
     // Mockear métodos para evitar dependencias reales
-    spyOn(service, 'signUp').and.callFake(async (email, password) => ({ data: {}, error: null }));
-    spyOn(service, 'signIn').and.callFake(async (email, password) => ({ data: {}, error: null }));
-    spyOn(service, 'signOut').and.callFake(async () => ({ error: null }));
-    spyOn(service, 'getCurrentUser').and.callFake(() => ({
+    const mockUser: Partial<User> = {
       id: 'mock-id',
       email: 'mock@email.com',
-    }));
-    const { of } = require('rxjs');
+      app_metadata: {},
+      user_metadata: {},
+      aud: 'authenticated',
+      created_at: new Date().toISOString(),
+    };
+
+    spyOn(service, 'signUp').and.callFake(async (email, password) => ({
+      data: { user: mockUser as any, session: null },
+      error: null,
+    } as any));
+    spyOn(service, 'signIn').and.callFake(async (email, password) => ({
+      data: { user: mockUser as any, session: null },
+      error: null,
+    } as any));
+    spyOn(service, 'signOut').and.callFake(async () => ({ error: null }));
+    spyOn(service, 'getCurrentUser').and.callFake(() => mockUser as User);
     spyOnProperty(service, 'user$', 'get').and.returnValue(of(null));
   });
 

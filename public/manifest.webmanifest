@@ -9,6 +9,9 @@
   "background_color": "#ffffff",
   "orientation": "portrait-primary",
   "categories": ["productivity", "utilities"],
+  "prefer_related_applications": false,
+  "gcm_sender_id": "103953800507",
+  "permissions": ["geolocation", "notifications"],
   "icons": [
     {
       "src": "icons/icon-72x72.png",
