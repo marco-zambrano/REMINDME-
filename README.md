@@ -1,56 +1,140 @@
 ﻿# RemindMe
 
-App para crear recordatorios que se activan cuando llegas a una ubicación específica.
+App para crear recordatorios que se activan cuando llegas a una ubicación específica. Usa tu ubicación GPS para notificarte cuando estés cerca de un lugar importante.
 
 ## Demo en Vivo
 
+Prueba la app sin instalación:
 - [Azure](https://remindme-dubxaedzd8aff3cf.canadacentral-01.azurewebsites.net/home)
 - [Google Cloud](https://remindme-705782152648.us-central1.run.app/home)
 
 ## ¿Cómo funciona?
 
 1. Te registras con tu email
-2. Creas un recordatorio con título y ubicación
-3. Seleccionas en el mapa dónde quieres ser recordado
-4. La app usa GPS para detectar cuándo llegas
-5. Recibes una notificación cuando estés cerca
+2. Creas un recordatorio (ej: "Comprar leche en el supermercado")
+3. Seleccionas la ubicación en el mapa
+4. Defines un radio (ejemplo: 100 metros)
+5. La app detecta cuándo llegas a esa zona usando GPS
+6. Recibes una notificación cuando estés cerca
 
-## Instalar localmente
+## Instalación
 
-### Requisitos
-- Node.js 18+
-- npm
+### Requisitos Previos
 
-### Pasos
+- **Node.js** versión 18 o superior
+- **npm** (incluido con Node.js)
+- Cuenta en **Supabase** (gratis en supabase.com)
+- **API Key de Google Maps** (gratis en developers.google.com/maps)
 
-1. Clona el proyecto
-`bash
+### Pasos de Instalación
+
+1. **Clona el repositorio**
+`ash
 git clone https://github.com/marco-zambrano/REMINDME-.git
 cd REMINDME-
 `
 
-2. Instala dependencias
-`bash
+2. **Instala las dependencias**
+`ash
 npm install
 `
 
-3. Configura el archivo src/environments/environment.ts con tus credenciales de Supabase y Google Maps
+3. **Configura las variables de entorno**
 
-4. Inicia la app
-`bash
+Edita el archivo src/environments/environment.ts:
+`	ypescript
+export const environment = {
+  production: false,
+  supabaseUrl: 'tu-url-supabase',
+  supabaseKey: 'tu-key-supabase',
+  googleMapsApiKey: 'tu-api-key-google-maps'
+};
+`
+
+4. **Inicia el servidor de desarrollo**
+`ash
 npm start
 `
 
-Abre http://localhost:4200
+Abre tu navegador en http://localhost:4200
 
-## Comandos
+## Cómo Usar
 
-`bash
-npm start          # Inicia el servidor de desarrollo
-npm run build:prod # Build para producción
-npm test           # Ejecuta las pruebas
+### Crear una Cuenta
+
+1. Ve a la página de registro
+2. Ingresa tu email y contraseña
+3. Confirma tu email
+4. Ya puedes iniciar sesión
+
+### Crear un Recordatorio
+
+1. Haz clic en "Nuevo Recordatorio"
+2. Completa los campos:
+   - **Título**: Qué necesitas recordar (ej: "Comprar leche")
+   - **Descripción**: Detalles adicionales (opcional)
+   - **Categoría**: Selecciona o crea una categoría (Trabajo, Personal, Compras, etc)
+   - **Ubicación**: Haz clic en el mapa y marca el lugar
+   - **Radio de Notificación**: Define a qué distancia te notificará (en metros)
+3. Guarda el recordatorio
+
+### Gestionar Recordatorios
+
+- **Ver todos**: Se muestran en la página principal
+- **Editar**: Haz clic en un recordatorio para modificarlo
+- **Eliminar**: Elimina recordatorios que ya no necesites
+- **Marcar como completado**: Indica cuándo ya lo hiciste
+
+### Configuración
+
+- **Cambiar idioma**: Inglés o Español
+- **Modo oscuro**: Activa desde las opciones
+- **Notificaciones**: Habilita o deshabilita alertas
+
+## Comandos Disponibles
+
+`ash
+npm start              # Inicia el servidor de desarrollo en http://localhost:4200
+npm run build:prod     # Crea una versión optimizada para producción
+npm test               # Ejecuta las pruebas unitarias
+npm run watch          # Modo observación para cambios automáticos
 `
+
+## Características
+
+-  Recordatorios basados en ubicación GPS
+-  Autenticación segura con Supabase
+-  Integración con Google Maps
+-  Notificaciones en tiempo real
+-  Categorías para organizar recordatorios
+-  Multiidioma (Español e Inglés)
+-  Modo oscuro
+-  Funciona en dispositivos móviles
+-  PWA (se puede instalar como app)
+
+## Stack Tecnológico
+
+- **Frontend**: Angular 20, TypeScript
+- **Estilos**: Tailwind CSS 4
+- **Backend**: Supabase (PostgreSQL)
+- **Autenticación**: Supabase Auth
+- **Mapas**: Google Maps API
+- **Testing**: Jasmine y Karma
+- **i18n**: ngx-translate
+
+## Contribuir
+
+¿Encontraste un bug o tienes una sugerencia?
+
+1. [Abre un issue](https://github.com/marco-zambrano/REMINDME-/issues) describiendo el problema
+2. O haz un fork y crea un Pull Request
+
+Ver [CONTRIBUTING.md](CONTRIBUTING.md) para más detalles.
 
 ## Repositorio
 
 [marco-zambrano/REMINDME-](https://github.com/marco-zambrano/REMINDME-)
+
+---
+
+¿Te gusta RemindMe?  Apóyalo dando una estrella en GitHub
