@@ -1,17 +1,17 @@
-<div class="min-h-screen bg-linear-to-br from-green-50 via-teal-50 to-cyan-50 flex items-center justify-center p-4">
+<div class="min-h-screen bg-gradient-to-br from-red-50 via-pink-50 to-rose-50 flex items-center justify-center p-4">
   <div class="w-full max-w-md mx-auto">
     <!-- Logo y Título Animado -->
     <div class="text-center mb-8 animate-fade-in">
       <div class="inline-block mb-4 relative">
-        <div class="absolute inset-0 bg-green-500 rounded-full blur-2xl opacity-20 animate-pulse"></div>
+        <div class="absolute inset-0 bg-red-500 rounded-full blur-2xl opacity-20 animate-pulse"></div>
         <div
-          class="relative bg-linear-to-br from-green-600 to-cyan-600 rounded-3xl p-6 sm:p-7 shadow-2xl transform hover:scale-105 transition-transform duration-300">
+          class="relative bg-gradient-to-br from-red-600 to-pink-600 rounded-3xl p-6 sm:p-7 shadow-2xl transform hover:scale-105 transition-transform duration-300">
           <span class="material-symbols-rounded text-white" style="font-size: 3.5rem;">location_on</span>
         </div>
       </div>
 
       <h1 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-2">
-        <span class="bg-linear-to-r from-green-600 to-cyan-600 bg-clip-text text-transparent">
+        <span class="bg-gradient-to-r from-red-600 to-pink-600 bg-clip-text text-transparent">
           RemindMe
         </span>
       </h1>
@@ -32,8 +32,8 @@
             </div>
 
             <input type="email" formControlName="email"
-              class="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-2
-              focus:ring-green-200 outline-none transition-all duration-200 placeholder:text-gray-300 placeholder:text-sm"
+              class="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-red-500 focus:ring-2
+              focus:ring-red-200 outline-none transition-all duration-200 placeholder:text-gray-300 placeholder:text-sm"
               placeholder="Ingresa tu correo electrónico"
               [class.border-red-300]="form.get('email')?.invalid && form.get('email')?.touched" />
           </div>
@@ -52,8 +52,8 @@
             </div>
 
             <input [type]="showPassword ? 'text' : 'password'" formControlName="password"
-              class="w-full pl-12 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-2
-              focus:ring-green-200 outline-none transition-all duration-200 placeholder:text-gray-300 placeholder:text-sm"
+              class="w-full pl-12 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:border-red-500 focus:ring-2
+              focus:ring-red-200 outline-none transition-all duration-200 placeholder:text-gray-300 placeholder:text-sm"
               placeholder="Crea una contraseña segura"
               [class.border-red-300]="form.get('password')?.invalid && form.get('password')?.touched" />
 
@@ -89,7 +89,7 @@
 
         <!-- Submit Button -->
         <button type="submit" [disabled]="loading || form.invalid"
-          class="w-full bg-linear-to-r from-green-600 to-cyan-600 hover:from-green-700 hover:to-cyan-700 text-white
+          class="w-full bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white
           font-semibold py-3 px-6 rounded-xl shadow-lg transform transition-all duration-200 hover:scale-[1.02]
           disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
 

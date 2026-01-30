@@ -1,15 +1,15 @@
 <div
-  class="min-h-screen bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4"
+  class="min-h-screen bg-gradient-to-br from-red-50 via-pink-50 to-rose-50 flex items-center justify-center p-4"
 >
   <div class="w-full max-w-md mx-auto">
     <!-- Logo y Título Animado -->
     <div class="text-center mb-8 animate-fade-in">
       <div class="inline-block mb-4 relative">
         <div
-          class="absolute inset-0 bg-blue-500 rounded-full blur-2xl opacity-20 animate-pulse"
+          class="absolute inset-0 bg-red-500 rounded-full blur-2xl opacity-20 animate-pulse"
         ></div>
         <div
-          class="relative bg-linear-to-br from-blue-600 to-purple-600 rounded-3xl p-6 sm:p-7 shadow-2xl transform hover:scale-105 transition-transform duration-300"
+          class="relative bg-gradient-to-br from-red-600 to-pink-600 rounded-3xl p-6 sm:p-7 shadow-2xl transform hover:scale-105 transition-transform duration-300"
         >
           <span class="material-symbols-rounded text-white" style="font-size: 3.5rem"
             >location_on</span
@@ -18,7 +18,7 @@
       </div>
 
       <h1 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-2">
-        <span class="bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"
+        <span class="bg-gradient-to-r from-red-600 to-pink-600 bg-clip-text text-transparent"
           >RemindMe</span
         >
       </h1>
@@ -40,7 +40,7 @@
             </div>
 
             <input
-              class="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all duration-200 placeholder:text-gray-300 placeholder:text-sm"
+              class="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-red-500 focus:ring-2 focus:ring-red-200 outline-none transition-all duration-200 placeholder:text-gray-300 placeholder:text-sm"
               type="email"
               formControlName="email"
               placeholder="Ingresa tu correo electrónico"
@@ -66,7 +66,7 @@
             </div>
 
             <input
-              class="w-full pl-12 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all duration-200 placeholder:text-gray-300 placeholder:text-sm"
+              class="w-full pl-12 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:border-red-500 focus:ring-2 focus:ring-red-200 outline-none transition-all duration-200 placeholder:text-gray-300 placeholder:text-sm"
               [type]="showPassword ? 'text' : 'password'"
               formControlName="password"
               placeholder="Escribe tu contraseña"
@@ -108,7 +108,7 @@
         <button
           type="submit"
           [disabled]="loading || form.invalid"
-          class="w-full bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg transform transition-all duration-200 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+          class="w-full bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg transform transition-all duration-200 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
         >
           <span *ngIf="!loading" class="flex items-center justify-center gap-2">
             <span>Iniciar sesión</span>
@@ -189,12 +189,12 @@
         <span class="text-gray-600">Contacto: +593 98 765 4321</span>
 
         <span class="hidden sm:inline text-gray-400">|</span>
-        <a href="/privacy-policy" class="hover:text-blue-600 transition-colors"
+        <a href="/privacy-policy" class="hover:text-red-600 transition-colors"
           >Política de Privacidad</a
         >
 
         <span class="hidden sm:inline text-gray-400">|</span>
-        <a href="/terms-of-service" class="hover:text-blue-600 transition-colors"
+        <a href="/terms-of-service" class="hover:text-red-600 transition-colors"
           >Términos de Uso</a
         >
       </div>

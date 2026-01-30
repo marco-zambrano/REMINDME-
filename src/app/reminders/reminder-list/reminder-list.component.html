@@ -26,7 +26,7 @@
           <button
             (click)="toggleMonitoring()"
             [class]="
-              isMonitoring() ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-600 hover:bg-gray-700'
+              isMonitoring() ? 'bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700' : 'bg-gray-600 hover:bg-gray-700'
             "
             class="px-4 py-2 text-white rounded-lg font-medium transition-colors"
           >
@@ -35,7 +35,7 @@
           </button>
           <a
             routerLink="/reminders/new"
-            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+            class="bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white px-4 py-2 rounded-lg font-medium transition-colors shadow-md"
           >
             + Nuevo Recordatorio
           </a>
@@ -84,7 +84,7 @@
       </div>
       <div class="mt-5 flex justify-end gap-2">
         <button (click)="closeNewCategoryModal()" class="px-4 py-2 rounded bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-500 text-sm font-medium">Cancelar</button>
-        <button (click)="addCategory()" class="px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700 text-sm font-medium">Crear</button>
+        <button (click)="addCategory()" class="px-4 py-2 rounded bg-gradient-to-r from-red-600 to-pink-600 text-white hover:from-red-700 hover:to-pink-700 text-sm font-medium">Crear</button>
       </div>
     </div>
   </div>
@@ -95,7 +95,7 @@
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
       <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-5">
         <div class="flex items-center">
-          <div class="shrink-0 bg-blue-500 rounded-md p-3">
+          <div class="shrink-0 bg-gradient-to-br from-red-500 to-pink-500 rounded-md p-3">
             <span class="material-symbols-rounded text-white">assignment</span>
           </div>
 
@@ -110,7 +110,7 @@
 
       <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-5">
         <div class="flex items-center">
-          <div class="shrink-0 bg-green-500 rounded-md p-3">
+          <div class="shrink-0 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-md p-3">
             <span class="material-symbols-rounded text-white">check</span>
           </div>
 
@@ -140,7 +140,7 @@
 
       <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-5">
         <div class="flex items-center">
-          <div class="shrink-0 bg-orange-500 rounded-md p-3">
+          <div class="shrink-0 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-md p-3">
             <span class="material-symbols-rounded text-white">location_on</span>
           </div>
 
@@ -211,8 +211,8 @@
               (click)="setCategory('all')"
               [class]="
                 selectedCategory() === 'all'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-200 text-gray-700'
+                  ? 'bg-gradient-to-r from-red-600 to-pink-600 text-white'
+                  : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300'
               "
               class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
             >
@@ -247,7 +247,7 @@
 
         <!-- Create Category (opens modal) -->
         <div class="flex items-end gap-2">
-          <button (click)="openNewCategoryModal()" class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-sm font-medium">
+          <button (click)="openNewCategoryModal()" class="bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white px-3 py-2 rounded-lg text-sm font-medium shadow-md">
             + {{ 'list.newCategory' | translate }}
           </button>
         </div>
@@ -285,7 +285,7 @@
           <p class="text-gray-500 dark:text-gray-400">{{ 'list.noActiveReminders' | translate }}</p>
           <a
             routerLink="/reminders/new"
-            class="text-blue-600 hover:text-blue-700 font-medium mt-2 inline-block"
+            class="text-red-600 hover:text-red-700 font-medium mt-2 inline-block"
           >
             {{ 'list.createNew' | translate }}
           </a>
@@ -306,7 +306,7 @@
               <div class="flex-1">
                 <div class="flex items-center gap-2 mb-2">
                   <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">{{ reminder.title }}</h3>
-                  <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                  <span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full">
                     {{ getCategoryName(reminder.category) }}
                   </span>
                 </div>
@@ -315,9 +315,9 @@
                 <div class="flex flex-wrap items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
                   <!-- Tipo de Activación -->
                   <span class="flex items-center gap-1 px-2 py-1 rounded" 
-                    [class]="reminder.activationType === 'location' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400' : 
+                    [class]="reminder.activationType === 'location' ? 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400' : 
                              reminder.activationType === 'time' ? 'bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-400' : 
-                             'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400'">
+                             'bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-400'">
                     <span class="material-symbols-rounded text-base">
                       {{ reminder.activationType === 'location' ? 'location_on' : 
                          reminder.activationType === 'time' ? 'schedule' : 'hub' }}
@@ -352,7 +352,7 @@
                         {{ formatDate(reminder.scheduledTime) }}
                       </span>
                       @if (reminder.isTimeActivated) {
-                        <span class="px-2 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs rounded-full">
+                        <span class="px-2 py-0.5 bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400 text-xs rounded-full">
                           ✓ Activado
                         </span>
                       }
@@ -366,14 +366,14 @@
             <div class="flex items-center gap-2 ml-4">
               <button
                 (click)="toggleComplete(reminder)"
-                class="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                class="p-2 text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
                 [title]="'list.markComplete' | translate"
               >
                 <span class="material-symbols-rounded">check</span>
               </button>
               <button
                 [routerLink]="['/reminders/edit', reminder.id]"
-                class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                 [title]="'list.edit' | translate"
               >
                 <span class="material-symbols-rounded">edit</span>
@@ -419,7 +419,7 @@
                   <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300 line-through">
                     {{ reminder.title }}
                   </h3>
-                  <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full flex items-center gap-1">
+                  <span class="px-2 py-1 bg-teal-100 text-teal-800 text-xs rounded-full flex items-center gap-1">
                     <span class="material-symbols-rounded text-sm">check</span>
                     {{ 'list.completedLabel' | translate }}
                   </span>
@@ -435,7 +435,7 @@
             <div class="flex items-center gap-2 ml-4">
               <button
                 (click)="toggleComplete(reminder)"
-                class="p-2 text-yellow-600 hover:bg-yellow-50 rounded-lg transition-colors"
+                class="p-2 text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
                 [title]="'list.reactivate' | translate"
               >
                 <span class="material-symbols-rounded">undo</span>
@@ -472,9 +472,9 @@
       <div class="flex items-center gap-4">
         <span class="text-gray-600 dark:text-gray-400">{{ 'list.contact' | translate }}</span>
         <span class="text-gray-400 dark:text-gray-500">|</span>
-        <a href="/privacy-policy" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{{ 'list.privacy' | translate }}</a>
+        <a href="/privacy-policy" class="hover:text-red-600 dark:hover:text-red-400 transition-colors">{{ 'list.privacy' | translate }}</a>
         <span class="text-gray-400 dark:text-gray-500">|</span>
-        <a href="/terms-of-service" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{{ 'list.terms' | translate }}</a>
+        <a href="/terms-of-service" class="hover:text-red-600 dark:hover:text-red-400 transition-colors">{{ 'list.terms' | translate }}</a>
       </div>
     </div>
   </div>

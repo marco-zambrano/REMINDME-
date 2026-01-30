@@ -1,95 +1,245 @@
-<header class="header bg-primary text-white p-4 shadow-lg">
-    <div class="container mx-auto flex justify-between items-center">
-        <h1 class="text-3xl font-bold">REMINDME</h1>
-        <nav class="flex space-x-4">
-            <button class="btn-secondary" (click)="crearCuenta()">
-                CREAR CUENTA
-            </button>
-            <button class="btn-secondary" (click)="iniciarSesion()">
-                INICIAR SESIÓN
-            </button>
-        </nav>
+<header class="bg-gradient-to-r from-red-600 to-pink-600 text-white shadow-lg sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center py-4">
+      <div class="flex items-center space-x-3">
+        <div class="bg-white/10 backdrop-blur-sm p-2 rounded-xl">
+          <span class="material-symbols-rounded text-3xl">location_on</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-bold tracking-tight">RemindMe</h1>
+      </div>
+      <nav class="flex space-x-3">
+        <button 
+          (click)="iniciarSesion()" 
+          class="px-4 py-2 rounded-lg font-medium transition-all hover:bg-white/10 backdrop-blur-sm border border-white/20 text-sm sm:text-base"
+        >
+          Iniciar sesión
+        </button>
+        <button 
+          (click)="crearCuenta()" 
+          class="px-4 py-2 bg-white text-red-600 rounded-lg font-medium transition-all hover:bg-gray-50 shadow-lg text-sm sm:text-base"
+        >
+          Crear cuenta
+        </button>
+      </nav>
     </div>
+  </div>
 </header>
 
-<main class="container mx-auto p-8">
+<main>
+  <!-- Hero Section -->
+  <section class="relative bg-gradient-to-br from-red-50 via-pink-50 to-white py-16 sm:py-24 overflow-hidden">
+    <div class="absolute inset-0 bg-grid-pattern opacity-5"></div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+      <div class="text-center max-w-4xl mx-auto">
+        <div class="inline-flex items-center gap-2 bg-red-100 text-red-700 px-4 py-2 rounded-full text-sm font-medium mb-6">
+          <span class="material-symbols-rounded text-lg">auto_awesome</span>
+          Recordatorios inteligentes con geolocalización
+        </div>
+        
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 mb-6 leading-tight">
+          Nunca Olvides lo que
+          <span class="bg-gradient-to-r from-red-600 to-pink-600 bg-clip-text text-transparent"> Más Importa</span>
+        </h1>
+        
+        <p class="text-xl sm:text-2xl text-gray-600 mb-10 leading-relaxed">
+          RemindMe te alerta automáticamente cuando llegues al lugar perfecto para tus tareas. 
+          <span class="font-semibold text-gray-900">Tu memoria ahora tiene GPS 📍</span>
+        </p>
+        
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <button 
+            (click)="crearCuenta()"
+            class="px-8 py-4 bg-gradient-to-r from-red-600 to-pink-600 text-white rounded-xl font-bold text-lg shadow-xl hover:shadow-2xl hover:scale-105 transition-all flex items-center gap-2 w-full sm:w-auto justify-center"
+          >
+            <span>Comenzar Gratis</span>
+            <span class="material-symbols-rounded">arrow_forward</span>
+          </button>
+          <button 
+            (click)="iniciarSesion()"
+            class="px-8 py-4 bg-white text-red-600 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all border-2 border-red-200 w-full sm:w-auto"
+          >
+            Ya tengo cuenta
+          </button>
+        </div>
+        
+        <div class="mt-12 flex items-center justify-center gap-8 text-sm text-gray-600">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-rounded text-green-600">check_circle</span>
+            <span>Gratis para siempre</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-rounded text-green-600">check_circle</span>
+            <span>Sin tarjeta de crédito</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <section class="hero-section text-center py-16 bg-white rounded-xl shadow-lg mb-12" style="animation-delay: 0s;">
-        <h2 class="text-5xl font-extrabold text-gray-800 mb-4">
-            Bienvenido al Futuro de la Productividad
+  <!-- Features Section -->
+  <section class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+          ¿Por qué Elegir RemindMe?
         </h2>
-        <div class="intro-message text-gray-600 mb-8 max-w-2xl mx-auto">
-            <p class="text-2xl font-semibold mb-2">
-                <span class="material-symbols-rounded align-middle mr-1">push_pin</span>
-                Nunca más olvides lo importante.
-            </p>
-
-            <p class="text-xl">
-                Con <b>RemindMe</b> tus recordatorios se activan automáticamente cuando estés cerca del lugar donde debes hacer algo.
-            </p>
-
-            <p class="text-lg">
-                Compra lo que necesitas, cumple tus tareas y mantén tu vida organizada sin esfuerzo.
-            </p>
-
-            <p class="text-xl font-bold mt-4 text-primary flex items-center justify-center gap-2">
-                <span>Tu memoria ahora tiene GPS.</span>
-                <span class="material-symbols-rounded">rocket</span>
-                <span class="material-symbols-rounded">location_on</span>
-            </p>
-        </div>
-
-        <div class="flex justify-center space-x-6">
-            <button class="btn-primary-large hover:shadow-lg" (click)="crearCuenta()">
-                CREAR CUENTA GRATIS
-            </button>
-            <button class="btn-tertiary-large hover:shadow-lg" (click)="iniciarSesion()">
-                YA TENGO CUENTA
-            </button>
-        </div>
-    </section>
-
-    <section class="features-section grid grid-cols-1 md:grid-cols-3 gap-8">
-
-        <div class="feature-card bg-white p-6 rounded-xl shadow hover:shadow-md" style="animation-delay: 0.1s;">
-            <div class="icon-circle bg-accent-light text-accent mb-4"><span class="material-symbols-rounded">location_on</span></div>
-            <h3 class="text-xl font-semibold mb-2">Recordatorios en Ubicación</h3>
-            <p class="text-gray-600">Alerta al entrar o salir de una dirección específica. Tu mundo es tu lista de pendientes.</p>
-        </div>
-
-        <div class="feature-card bg-white p-6 rounded-xl shadow hover:shadow-md" style="animation-delay: 0.2s;">
-            <div class="icon-circle bg-accent-light text-accent mb-4"><span class="material-symbols-rounded">auto_awesome</span></div>
-            <h3 class="text-xl font-semibold mb-2">Diseño Intuitivo</h3>
-            <p class="text-gray-600">Crea, edita y gestiona tus recordatorios con una interfaz diseñada para la velocidad.</p>
-        </div>
-
-        <div class="feature-card bg-white p-6 rounded-xl shadow hover:shadow-md" style="animation-delay: 0.3s;">
-            <div class="icon-circle bg-accent-light text-accent mb-4"><span class="material-symbols-rounded">smartphone</span></div>
-            <h3 class="text-xl font-semibold mb-2">Sincronización Total</h3>
-            <p class="text-gray-600">Accede a tus alertas desde tu teléfono, tablet o escritorio. Siempre al día.</p>
-        </div>
-
-    </section>
-</main>
-
-<!-- Footer datos -->
-<footer class="w-full bg-gray-50 border-t border-gray-200 py-6">
-  <div class="max-w-4xl mx-auto px-4">
-    <div class="flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-gray-600">
-      <!-- Información -->
-      <div class="flex items-center gap-2">
-        <span class="font-semibold text-gray-700">© 2025 RemindMe</span>
-        <span class="text-gray-400">|</span>
-        <span>Todos los derechos reservados</span>
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+          Productividad basada en ubicación. Recordatorios que llegan en el momento y lugar exactos.
+        </p>
       </div>
 
-      <!-- Links -->
-      <div class="flex items-center gap-4">
-        <span class="text-gray-600">Contacto: +593 98 765 4321</span>
-        <span class="text-gray-400">|</span>
-        <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" class="hover:text-blue-600 transition-colors">Política de Privacidad</a>
-        <span class="text-gray-400">|</span>
-        <a href="/terms-of-service" target="_blank" rel="noopener noreferrer" class="hover:text-blue-600 transition-colors">Términos de Uso</a>
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="bg-gradient-to-br from-red-50 to-pink-50 p-8 rounded-2xl hover:shadow-xl transition-shadow">
+          <div class="bg-gradient-to-br from-red-500 to-pink-500 w-14 h-14 rounded-xl flex items-center justify-center mb-6">
+            <span class="material-symbols-rounded text-white text-3xl">location_on</span>
+          </div>
+          <h3 class="text-2xl font-bold text-gray-900 mb-3">Alertas por Ubicación</h3>
+          <p class="text-gray-600 leading-relaxed">
+            Recibe notificaciones cuando entres o salgas de lugares específicos. Tu mundo es tu lista de tareas.
+          </p>
+        </div>
+
+        <div class="bg-gradient-to-br from-teal-50 to-cyan-50 p-8 rounded-2xl hover:shadow-xl transition-shadow">
+          <div class="bg-gradient-to-br from-teal-500 to-cyan-500 w-14 h-14 rounded-xl flex items-center justify-center mb-6">
+            <span class="material-symbols-rounded text-white text-3xl">smart_display</span>
+          </div>
+          <h3 class="text-2xl font-bold text-gray-900 mb-3">Interfaz Intuitiva</h3>
+          <p class="text-gray-600 leading-relaxed">
+            Diseño moderno y fácil de usar. Crea recordatorios en segundos y gestiona todo desde un solo lugar.
+          </p>
+        </div>
+
+        <div class="bg-gradient-to-br from-yellow-50 to-orange-50 p-8 rounded-2xl hover:shadow-xl transition-shadow">
+          <div class="bg-gradient-to-br from-yellow-500 to-orange-500 w-14 h-14 rounded-xl flex items-center justify-center mb-6">
+            <span class="material-symbols-rounded text-white text-3xl">sync</span>
+          </div>
+          <h3 class="text-2xl font-bold text-gray-900 mb-3">Sincronización Total</h3>
+          <p class="text-gray-600 leading-relaxed">
+            Accede desde cualquier dispositivo. Tus recordatorios siempre disponibles, donde los necesites.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it Works -->
+  <section class="py-20 bg-gradient-to-br from-gray-50 to-red-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+          ¿Cómo Funciona?
+        </h2>
+        <p class="text-xl text-gray-600">
+          Tres simples pasos para nunca olvidar nada importante
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="text-center">
+          <div class="bg-gradient-to-br from-red-500 to-pink-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+            <span class="text-white text-2xl font-bold">1</span>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-3">Crea tu Recordatorio</h3>
+          <p class="text-gray-600">
+            Añade un título, descripción y selecciona la ubicación en el mapa
+          </p>
+        </div>
+
+        <div class="text-center">
+          <div class="bg-gradient-to-br from-teal-500 to-cyan-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+            <span class="text-white text-2xl font-bold">2</span>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-3">Olvídate de él</h3>
+          <p class="text-gray-600">
+            Continúa con tu día mientras RemindMe monitorea tu ubicación
+          </p>
+        </div>
+
+        <div class="text-center">
+          <div class="bg-gradient-to-br from-yellow-500 to-orange-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+            <span class="text-white text-2xl font-bold">3</span>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-3">Recibe la Alerta</h3>
+          <p class="text-gray-600">
+            Te notificamos automáticamente cuando llegues al lugar correcto
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-20 bg-gradient-to-r from-red-600 to-pink-600 text-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-3xl sm:text-4xl font-bold mb-6">
+        ¿Listo para Aumentar tu Productividad?
+      </h2>
+      <p class="text-xl mb-10 opacity-90">
+        Únete a miles de personas que ya organizan su vida con RemindMe
+      </p>
+      <button 
+        (click)="crearCuenta()"
+        class="px-10 py-5 bg-white text-red-600 rounded-xl font-bold text-xl shadow-2xl hover:shadow-3xl hover:scale-105 transition-all inline-flex items-center gap-3"
+      >
+        <span>Comenzar Ahora</span>
+        <span class="material-symbols-rounded">rocket_launch</span>
+      </button>
+    </div>
+  </section>
+</main>
+
+<!-- Footer -->
+<footer class="bg-gray-900 text-gray-300 py-12">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid md:grid-cols-4 gap-8 mb-8">
+      <div>
+        <div class="flex items-center gap-2 mb-4">
+          <span class="material-symbols-rounded text-red-500 text-2xl">location_on</span>
+          <span class="text-xl font-bold text-white">RemindMe</span>
+        </div>
+        <p class="text-sm text-gray-400">
+          Recordatorios inteligentes basados en tu ubicación.
+        </p>
+      </div>
+
+      <div>
+        <h4 class="font-bold text-white mb-4">Producto</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="hover:text-red-500 transition-colors">Características</a></li>
+          <li><a href="#" class="hover:text-red-500 transition-colors">Precios</a></li>
+          <li><a href="#" class="hover:text-red-500 transition-colors">Casos de Uso</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="font-bold text-white mb-4">Empresa</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="hover:text-red-500 transition-colors">Sobre Nosotros</a></li>
+          <li><a href="#" class="hover:text-red-500 transition-colors">Blog</a></li>
+          <li><a href="#" class="hover:text-red-500 transition-colors">Contacto</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="font-bold text-white mb-4">Legal</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a routerLink="/privacy-policy" class="hover:text-red-500 transition-colors">Política de Privacidad</a></li>
+          <li><a routerLink="/terms-of-service" class="hover:text-red-500 transition-colors">Términos de Servicio</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="border-t border-gray-800 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+      <p class="text-sm text-gray-400">
+        © 2025 RemindMe. Todos los derechos reservados.
+      </p>
+      <div class="flex gap-4">
+        <a href="#" class="text-gray-400 hover:text-red-500 transition-colors">
+          <span class="material-symbols-rounded">facebook</span>
+        </a>
+        <a href="#" class="text-gray-400 hover:text-red-500 transition-colors">
+          <span class="material-symbols-rounded">share</span>
+        </a>
       </div>
     </div>
   </div>
