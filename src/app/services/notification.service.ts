@@ -1,4 +1,5 @@
 import { Injectable, inject } from '@angular/core';
+import { SwPush } from '@angular/service-worker';
 import { GeolocationService } from './geolocation.service';
 import { ReminderService } from './reminder.service';
 import { Reminder, Location } from '../models';
@@ -9,6 +10,7 @@ import { Reminder, Location } from '../models';
 export class NotificationService {
   private readonly geolocationService = inject(GeolocationService);
   private readonly reminderService = inject(ReminderService);
+  private readonly swPush = inject(SwPush);
   private isMonitoring = false;
   private monitoringSubscription: any = null;
   private readonly notifiedReminders = new Set<string>();
@@ -39,20 +41,44 @@ export class NotificationService {
   }
 
   /**
-   * Muestra una notificación
+   * Muestra una notificación usando Service Worker (compatible con móviles)
    * @param title Título de la notificación
    * @param options Opciones de la notificación
    */
-  showNotification(title: string, options?: NotificationOptions): void {
-    if (Notification.permission === 'granted') {
-      const notification = new Notification(title, {
-        icon: '/assets/icon.png',
-        badge: '/assets/badge.png',
-        ...options,
-      });
+  async showNotification(title: string, options?: NotificationOptions): Promise<void> {
+    if (Notification.permission !== 'granted') {
+      return;
+    }
 
-      // Auto-cerrar después de 5 segundos
-      setTimeout(() => notification.close(), 5000);
+    try {
+      // Si el Service Worker está disponible, usarlo (mejor para móviles)
+      if (this.swPush.isEnabled && 'serviceWorker' in navigator && navigator.serviceWorker.controller) {
+        const registration = await navigator.serviceWorker.ready;
+        await registration.showNotification(title, {
+          icon: '/icons/icon-192x192.png',
+          badge: '/icons/icon-72x72.png',
+          vibrate: [200, 100, 200],
+          requireInteraction: true,
+          ...options,
+        });
+      } else {
+        // Fallback a Notification API estándar
+        const notification = new Notification(title, {
+          icon: '/icons/icon-192x192.png',
+          badge: '/icons/icon-72x72.png',
+          ...options,
+        });
+        // Auto-cerrar después de 5 segundos solo en desktop
+        setTimeout(() => notification.close(), 5000);
+      }
+    } catch (error) {
+      console.error('Error al mostrar notificación:', error);
+      // Intentar con API estándar como último recurso
+      try {
+        new Notification(title, options);
+      } catch (e) {
+        console.error('Error con Notification API:', e);
+      }
     }
   }
 
@@ -60,17 +86,18 @@ export class NotificationService {
    * Muestra una notificación para un recordatorio
    * @param reminder Recordatorio
    */
-  showReminderNotification(reminder: Reminder): void {
+  async showReminderNotification(reminder: Reminder): Promise<void> {
     const options: NotificationOptions = {
       body: reminder.description,
-      icon: '/assets/icon.png',
-      badge: '/assets/badge.png',
+      icon: '/icons/icon-192x192.png',
+      badge: '/icons/icon-72x72.png',
       tag: reminder.id,
       requireInteraction: true,
       data: { reminderId: reminder.id },
+      vibrate: [200, 100, 200, 100, 200],
     };
 
-    this.showNotification(`📍 ${reminder.title}`, options);
+    await this.showNotification(`📍 ${reminder.title}`, options);
 
     // Marcar como notificado
     if (reminder.id) {
@@ -242,10 +269,11 @@ export class NotificationService {
   /**
    * Envía una notificación de prueba
    */
-  sendTestNotification(): void {
-    this.showNotification('¡Notificaciones activadas!', {
+  async sendTestNotification(): Promise<void> {
+    await this.showNotification('¡Notificaciones activadas!', {
       body: 'RemindMe te notificará cuando estés cerca de tus recordatorios.',
-      icon: '/assets/icon.png',
+      icon: '/icons/icon-192x192.png',
+      vibrate: [200, 100, 200],
     });
   }
 }

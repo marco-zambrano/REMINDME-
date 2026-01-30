@@ -4,6 +4,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map } from 'rxjs';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ReminderService } from './services/reminder.service';
+import { NotificationService } from './services/notification.service';
 import { PwaService } from './services/pwa.service';
 import { SupabaseService } from './services/supabase.service';
 import { ThemeService } from './services/theme.service';
@@ -20,6 +21,7 @@ import { SpeakOnTapDirective } from './shared/speak-on-tap.directive';
 export class App implements OnInit {
   protected readonly title = signal('remindme');
   private readonly reminderService = inject(ReminderService);
+  private readonly notificationService = inject(NotificationService);
   private readonly pwaService = inject(PwaService);
   private readonly supabaseService = inject(SupabaseService);
   private readonly router = inject(Router);
@@ -70,6 +72,21 @@ export class App implements OnInit {
     console.log('🚀 RemindMe PWA iniciado');
     console.log('📱 ¿App instalada?', this.pwaService.isInstalled());
     console.log('💾 ¿Puede instalarse?', this.pwaService.canInstall());
+
+    // Iniciar monitoreo automático si hay usuario autenticado
+    if (this.currentUser()) {
+      try {
+        const permission = await this.notificationService.requestPermission();
+        if (permission === 'granted') {
+          this.notificationService.startLocationMonitoring();
+          console.log('🔔 Monitoreo de notificaciones iniciado');
+        } else {
+          console.log('⚠️ Permisos de notificación no otorgados');
+        }
+      } catch (error) {
+        console.error('Error iniciando monitoreo:', error);
+      }
+    }
   }
 
   setLanguage(lang: 'es' | 'en'): void {

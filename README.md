@@ -17,6 +17,18 @@
 - Define un radio de proximidad personalizable (100m - 2km)
 - Recibe notificaciones automáticas al acercarte al lugar
 
+### ⏰ Recordatorios Programados por Tiempo
+
+- Programa recordatorios para activarse en una hora específica
+- Notificaciones en segundo plano (en dispositivos móviles con PWA)
+- Combinación de activación: ubicación + tiempo
+
+### 📱 Notificaciones en Celular (PWA)
+
+- Notificaciones nativas con vibración
+- Funciona en segundo plano (Android 8+, iOS 16.4+)
+- Compatible con todos los navegadores modernos
+
 ### 🔐 Autenticación Segura
 
 - Sistema de registro e inicio de sesión con Supabase
@@ -28,7 +40,7 @@
 - Instalable en dispositivos móviles y escritorio
 - Funciona offline
 - Actualizaciones automáticas en segundo plano
-- Notificaciones push nativas
+- Notificaciones push nativas con vibración
 
 ### 🎨 Categorización Inteligente
 
@@ -153,6 +165,35 @@ ng test
 ```bash
 ng test --code-coverage
 ```
+
+## 📱 Notificaciones en Celular (PWA)
+
+Para recibir notificaciones en tu celular:
+
+1. **Crear un build de producción:**
+   ```bash
+   npm run build
+   ```
+
+2. **Desplegar o servir con HTTPS:**
+   - **Firebase Hosting**: `firebase deploy`
+   - **Netlify**: `netlify deploy --prod`
+   - **Vercel**: `vercel --prod`
+
+3. **Instalar la PWA:**
+   - **Android**: Abre la app → Menú (⋮) → "Instalar RemindMe"
+   - **iOS**: Tap Compartir (↑) → "Agregar a pantalla de inicio"
+
+4. **Otorgar permisos:**
+   - Notificaciones: Necesarias para recibir notificaciones
+   - Ubicación: Necesarias para recordatorios por proximidad
+
+5. **Probar:**
+   - Crea un recordatorio con activación por tiempo
+   - Cierra la app o ponla en segundo plano
+   - Recibe la notificación con vibración
+
+📖 **Guía completa:** Ver [README_NOTIFICACIONES_CELULAR.md](./README_NOTIFICACIONES_CELULAR.md)
 
 ## Running end-to-end tests
 

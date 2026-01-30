@@ -12,6 +12,11 @@ interface EnvironmentVariables {
   GOOGLE_MAPS_API_KEY?: string;
 }
 
+// Extender NotificationOptions para incluir vibrate (solo soportado en móviles)
+interface NotificationOptions {
+  vibrate?: number[] | number;
+}
+
 declare global {
   interface Window {
     ENV?: EnvironmentVariables;
