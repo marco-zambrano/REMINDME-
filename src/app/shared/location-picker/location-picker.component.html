@@ -5,13 +5,13 @@
       <div class="flex items-center justify-between mb-3">
         <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
           <span class="material-symbols-rounded text-2xl">map</span>
-          Seleccionar Ubicación
+          {{ 'location.title' | translate }}
         </h2>
         <button
           type="button"
           (click)="onCancel()"
           class="text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100"
-          title="Cerrar"
+          [title]="'location.close' | translate"
         >
           <span class="material-symbols-rounded text-2xl">close</span>
         </button>
@@ -41,7 +41,7 @@
             <div
               class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"
             ></div>
-            <p class="mt-4 text-gray-600">Cargando mapa...</p>
+            <p class="mt-4 text-gray-600">{{ 'location.loadingMap' | translate }}</p>
           </div>
         </div>
       }
@@ -73,10 +73,7 @@
       <div class="mb-3 p-2 bg-blue-50 border border-blue-200 rounded-lg">
         <p class="text-sm text-blue-800 flex items-start gap-2">
           <span class="material-symbols-rounded text-base mt-0.5 flex-shrink-0">info</span>
-          <span
-            >Haz clic en el mapa o arrastra el marcador para seleccionar la ubicación. También
-            puedes buscar un lugar en la barra superior.</span
-          >
+          <span>{{ 'location.info' | translate }}</span>
         </p>
       </div>
 
@@ -87,14 +84,14 @@
           class="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium flex items-center justify-center gap-2"
         >
           <span class="material-symbols-rounded">check_circle</span>
-          Confirmar Ubicación
+          {{ 'location.confirm' | translate }}
         </button>
         <button
           type="button"
           (click)="onCancel()"
           class="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-medium"
         >
-          Cancelar
+          {{ 'location.cancel' | translate }}
         </button>
       </div>
     </div>

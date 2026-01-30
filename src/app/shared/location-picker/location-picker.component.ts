@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslatePipe } from '@ngx-translate/core';
 import { GoogleMapsService, GoogleMapsLocation } from '../../services/google-maps.service';
 import { environment } from '../../../environments/environment';
 
@@ -18,7 +19,7 @@ declare const google: any;
 @Component({
   selector: 'app-location-picker',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslatePipe],
   templateUrl: './location-picker.component.html',
   styleUrls: ['./location-picker.component.css'],
 })
