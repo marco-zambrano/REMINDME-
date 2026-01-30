@@ -36,11 +36,20 @@
             <span>{{ 'accessibility.darkMode' | translate }}</span>
             <button
               type="button"
+              role="switch"
               (click)="themeService.toggleTheme()"
-              class="rounded-full bg-gray-200 dark:bg-gray-600 px-4 py-2 text-xs font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-500 transition-colors"
-              [attr.aria-pressed]="themeService.isDark()"
+              [attr.aria-checked]="themeService.isDark()"
+              [attr.aria-label]="(themeService.isDark() ? ('accessibility.darkOn' | translate) : ('accessibility.darkOff' | translate))"
+              class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+              [class.bg-purple-600]="themeService.isDark()"
+              [class.bg-gray-200]="!themeService.isDark()"
+              [class.dark:bg-gray-600]="!themeService.isDark()"
             >
-              {{ themeService.isDark() ? ('accessibility.darkOn' | translate) : ('accessibility.darkOff' | translate) }}
+              <span
+                class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+                [class.translate-x-5]="themeService.isDark()"
+                [class.translate-x-0.5]="!themeService.isDark()"
+              ></span>
             </button>
           </li>
           <li class="flex items-center justify-between gap-4">
@@ -78,11 +87,20 @@
             <span>{{ 'accessibility.talkback' | translate }}</span>
             <button
               type="button"
+              role="switch"
               (click)="talkbackService.toggle()"
-              class="rounded-full bg-gray-200 dark:bg-gray-600 px-4 py-2 text-xs font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-500 transition-colors"
-              [attr.aria-pressed]="talkbackService.enabled()"
+              [attr.aria-checked]="talkbackService.enabled()"
+              [attr.aria-label]="(talkbackService.enabled() ? ('accessibility.talkbackOn' | translate) : ('accessibility.talkbackOff' | translate))"
+              class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+              [class.bg-purple-600]="talkbackService.enabled()"
+              [class.bg-gray-200]="!talkbackService.enabled()"
+              [class.dark:bg-gray-600]="!talkbackService.enabled()"
             >
-              {{ talkbackService.enabled() ? ('accessibility.talkbackOn' | translate) : ('accessibility.talkbackOff' | translate) }}
+              <span
+                class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+                [class.translate-x-5]="talkbackService.enabled()"
+                [class.translate-x-0.5]="!talkbackService.enabled()"
+              ></span>
             </button>
           </li>
         </ul>
