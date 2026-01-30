@@ -87,6 +87,16 @@ export class App implements OnInit {
         console.error('Error iniciando monitoreo:', error);
       }
     }
+
+    // Para iOS: reactivar monitoreo cuando la app vuelve al foreground
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        if (this.currentUser() && !this.notificationService.isMonitoringActive()) {
+          console.log('📱 App en foreground, reactivando monitoreo');
+          this.notificationService.startLocationMonitoring();
+        }
+      }
+    });
   }
 
   setLanguage(lang: 'es' | 'en'): void {

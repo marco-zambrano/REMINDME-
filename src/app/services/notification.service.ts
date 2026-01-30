@@ -51,34 +51,86 @@ export class NotificationService {
     }
 
     try {
-      // Si el Service Worker está disponible, usarlo (mejor para móviles)
-      if (this.swPush.isEnabled && 'serviceWorker' in navigator && navigator.serviceWorker.controller) {
-        const registration = await navigator.serviceWorker.ready;
-        await registration.showNotification(title, {
-          icon: '/icons/icon-192x192.png',
-          badge: '/icons/icon-72x72.png',
-          vibrate: [200, 100, 200],
-          requireInteraction: true,
-          ...options,
-        });
+      // Detectar si es iOS
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      
+      // En iOS, usar alertas de audio/vibración como alternativa
+      if (isIOS) {
+        // Vibración en iOS (si está soportada)
+        if ('vibrate' in navigator) {
+          navigator.vibrate([200, 100, 200, 100, 200]);
+        }
+        
+        // Reproducir sonido de notificación
+        this.playNotificationSound();
+        
+        // Mostrar con Notification API
+        try {
+          new Notification(title, {
+            icon: '/icons/icon-192x192.png',
+            badge: '/icons/icon-72x72.png',
+            body: options?.body,
+            tag: options?.tag,
+            requireInteraction: true,
+          });
+        } catch (e) {
+          console.log('Notification API no disponible en iOS');
+        }
       } else {
-        // Fallback a Notification API estándar
-        const notification = new Notification(title, {
-          icon: '/icons/icon-192x192.png',
-          badge: '/icons/icon-72x72.png',
-          ...options,
-        });
-        // Auto-cerrar después de 5 segundos solo en desktop
-        setTimeout(() => notification.close(), 5000);
+        // Android: usar Service Worker
+        if (this.swPush.isEnabled && 'serviceWorker' in navigator && navigator.serviceWorker.controller) {
+          const registration = await navigator.serviceWorker.ready;
+          await registration.showNotification(title, {
+            icon: '/icons/icon-192x192.png',
+            badge: '/icons/icon-72x72.png',
+            vibrate: [200, 100, 200],
+            requireInteraction: true,
+            ...options,
+          });
+        } else {
+          // Fallback
+          const notification = new Notification(title, {
+            icon: '/icons/icon-192x192.png',
+            badge: '/icons/icon-72x72.png',
+            ...options,
+          });
+          setTimeout(() => notification.close(), 5000);
+        }
       }
     } catch (error) {
       console.error('Error al mostrar notificación:', error);
-      // Intentar con API estándar como último recurso
       try {
         new Notification(title, options);
       } catch (e) {
         console.error('Error con Notification API:', e);
       }
+    }
+  }
+
+  /**
+   * Reproduce un sonido de notificación
+   */
+  private playNotificationSound(): void {
+    try {
+      const audioContext = new ((window as any).AudioContext || (window as any).webkitAudioContext)();
+      if (!audioContext) return;
+
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      oscillator.frequency.value = 800;
+      oscillator.type = 'sine';
+      
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+      
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.5);
+    } catch (e) {
+      // Silenciar si no funciona
     }
   }
 
@@ -152,12 +204,16 @@ export class NotificationService {
     // Verificar inmediatamente
     this.checkScheduledReminders();
 
-    // Verificar cada 30 segundos
+    // En iOS, verificar más frecuentemente (cada 10s) porque el app puede ser suspendido
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    const interval = isIOS ? 10000 : 30000;
+
+    // Verificar cada 10-30 segundos
     this.timeCheckInterval = setInterval(() => {
       this.checkScheduledReminders();
-    }, 30000);
+    }, interval);
 
-    console.log('Monitoreo de tiempo iniciado');
+    console.log(`Monitoreo de tiempo iniciado (intervalo: ${interval}ms)`);
   }
 
   /**
@@ -182,9 +238,12 @@ export class NotificationService {
         ) {
           const scheduledDate = new Date(reminder.scheduledTime);
           
-          // Si ya pasó la hora programada (con margen de 1 minuto)
-          if (scheduledDate <= now && scheduledDate > new Date(now.getTime() - 60000)) {
-            console.log(`Recordatorio programado activado: ${reminder.title}`);
+          // En iOS, usar margen mayor (2 minutos) por imprecisión del timing
+          const marginMs = /iPad|iPhone|iPod/.test(navigator.userAgent) ? 120000 : 60000;
+          
+          // Si ya pasó la hora programada (con margen)
+          if (scheduledDate <= now && scheduledDate > new Date(now.getTime() - marginMs)) {
+            console.log(`✅ Recordatorio programado activado: ${reminder.title}`);
             this.showReminderNotification(reminder);
             
             // Marcar como activado por tiempo
